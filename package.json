@@ -11,12 +11,14 @@
     "@types/node": "^16.18.16",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "install": "^0.13.0",
     "pubnub": "^7.2.2",
     "pubnub-react": "^3.0.2",
     "react": "^18.2.0",
     "react-chat-elements": "^12.0.8",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-native-web": "^0.18.12",
     "react-scripts": "5.0.1",
     "typescript": "*",
     "web-vitals": "^2.1.4"
@@ -48,7 +50,10 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
-    "eslint": "^8.0.1",
+    "babel-plugin-react-native-web": "^0.18.12",
+    "eslint": "^8.36.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.7.0",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
@@ -57,6 +62,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.8.4",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "webpack": "^5.76.2"
   }
 }
