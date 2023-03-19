@@ -1,10 +1,10 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Chat from './Components';
+import React from 'react'
+import logo from './logo.svg'
+import './App.css'
+import Chat from './Components/Chat'
 
 function App() {
-  return <Chat />;
+  return <Chat />
 }
 
-export default App;
+export default App
