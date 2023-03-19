@@ -6,7 +6,6 @@ interface propsMessageData {
   reference: any
 }
 export default function Message(data: propsMessageData) {
-  console.log(data.reference)
   return (
     <>
       {data.position === 'right' ? (

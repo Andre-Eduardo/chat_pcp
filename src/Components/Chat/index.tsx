@@ -9,7 +9,7 @@ import { Search } from '../Search'
 export default function Chat() {
   let data = [
     {
-      text: 'Olá, estou no aguardo das informações',
+      text: 'andre',
       hour: '11:39',
       position: 'left',
     },
@@ -106,21 +106,23 @@ export default function Chat() {
       messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
   }
-  function handleScrollToMessage() {
-    messageRefs.current[2].scrollIntoView({ behavior: 'smooth' })
-    console.log(messageRefs.current[2])
+  function handleScrollToMessage(position: any) {
+    messageRefs.current[0].scrollIntoView({ behavior: 'smooth' })
+    console.log(position)
   }
   function NavigateToMessage() {
+    var posi: any = []
     const filteredArray = messageList.filter((obj: any, index: any) => {
       const lowercaseText = obj.text.toLowerCase()
       const lowercaseSearchText = textInputSearch.toLowerCase()
       if (lowercaseText.indexOf(lowercaseSearchText) !== -1) {
         obj.positionInArray = index
+        posi.push(index)
         return true
       }
     })
     console.log(filteredArray)
-    handleScrollToMessage()
+    handleScrollToMessage(posi[0])
   }
 
   return (
@@ -160,9 +162,9 @@ export default function Chat() {
         </section>
         <div
           ref={messageListRef}
-          className="h-[100vh] w-full overflow-y-scroll pb-10  "
+          className="h-[100vh] w-full overflow-y-scroll mt-[70px]   "
         >
-          <div className=" z-10 w-full mt-[90px] mb-24 ">
+          <div className=" z-10 w-full mb-20   ">
             {messageList.map((message, index) => (
               <Message
                 reference={(el: any) => (messageRefs.current[index] = el)}
@@ -174,7 +176,7 @@ export default function Chat() {
             ))}
           </div>
         </div>
-        <footer className="max-w-[43rem]  md:px-3 w-full fixed bottom-0 bg-[#E4E4E4] ">
+        <footer className="max-w-[43rem]  md:px-3 w-full  bottom-0 bg-[#E4E4E4] ">
           <div className="md:mb-3">
             <Input
               text={messageText}
