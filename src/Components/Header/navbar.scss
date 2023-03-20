@@ -1,0 +1,112 @@
+.header {
+  hr {
+    border-color: #adb5bd;
+  }
+  .dropdown-toggle {
+    color: #333333;
+    font: normal normal normal 18px/25px Rawline;
+    text-decoration: none;
+    padding-right: 0;
+  }
+
+  .dropdown-toggle::after {
+    transition: all 0.3s ease;
+    display: none;
+  }
+
+  .dropdown-toggle.show::after {
+    -webkit-transform: rotate(-180deg);
+    -moz-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+    -o-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+  }
+
+  .dropdown-toggle > i {
+    transition: all 0.3s ease;
+    color: var(--verde);
+    font-size: 80%;
+  }
+
+  .dropdown-toggle.show > i {
+    -webkit-transform: rotate(-180deg);
+    -moz-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+    -o-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+  }
+
+  .dropdown-menu {
+    border-radius: 0;
+    background-color: #0ba8bcd9;
+    right: 30px !important;
+    .dropdown-item {
+      color: #fff;
+      border-bottom: 1px solid #e9ecef99;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: #e9ecef99;
+    }
+  }
+
+  .relogio {
+    color: #8a8a8a;
+    .horario {
+      font-size: 22px;
+    }
+    .localidade {
+      font-size: 12px;
+      font-weight: 100;
+    }
+  }
+
+  .titulo-principal {
+    width: 100vw;
+    background-color: #00606c;
+    display: flex;
+    padding: 30px 0;
+    h2 {
+      font: normal normal bold 23px/32px Rawline;
+      letter-spacing: 0px;
+      color: #ffffff;
+    }
+    h1 {
+      font: normal normal bold 46px/63px Rawline;
+      letter-spacing: 0px;
+      color: #ffffff;
+      position: relative;
+      &:after {
+        content: '';
+        width: 64px;
+        height: 4px;
+        /* UI Properties */
+        background: var(--laranja) 0% 0% no-repeat padding-box;
+        background: #f7a625 0% 0% no-repeat padding-box;
+        border-radius: 4px;
+        position: absolute;
+        bottom: -5px;
+        left: -10px;
+      }
+    }
+  }
+
+  .btn_cadastro {
+    width: 175px;
+    height: 42px;
+    background-color: #f7a625;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

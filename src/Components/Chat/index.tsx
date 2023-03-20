@@ -115,7 +115,7 @@ export default function Chat() {
       behavior: 'smooth',
     })
 
-    messageRefs.current[currentIndexSearch].style.backgroundColor = 'green'
+    // messageRefs.current[currentIndexSearch].style.backgroundColor = 'green'
   }
   async function NavigateToMessage() {
     var posit: number[] = []
@@ -135,10 +135,10 @@ export default function Chat() {
   }, [currentIndexSearch])
   return (
     <div className=" h-[100vh] bg-[#F2F2F2] ">
-      <div className=" w-full  justify-center flex-col ">
+      <div className="  justify-center flex-col overscroll-y-none ">
         <Header />
-        <div className="container  mx-auto  max-w-[43rem] bg-[#E4E4E4] flex flex-col items-center justify-between">
-          <section className="  h-[4.6rem] bg-white w-full max-w-[43rem] flex flex-row  justify-between items-center px-7">
+        <div className="container   h-[100vh] mx-auto overscroll-y-contain max-w-[43rem] bg-[#E4E4E4] flex flex-col items-center justify-between">
+          <section className=" px-3 md:px-9 h-[4.6rem] bg-white w-full max-w-[43rem] flex flex-row  justify-between items-center ">
             {!openSearch && (
               <div className="flex flex-row">
                 <div className="relative">
@@ -177,10 +177,17 @@ export default function Chat() {
               />
             )}
           </section>
+
           <div
             ref={messageListRef}
-            className="h-[100vh] w-full overflow-y-scroll mt-[70px]   "
+            className="h-[100vh] w-full overflow-y-scroll  mb-16   "
           >
+            <div className=" relative flex justify-center items-center h-2 mt-4  ">
+              <a className="h-[1px] bg-[#707070]  w-full opacity-30 "></a>
+              <div className="absolute bg-[#E4E4E4] p-5">
+                <h3 className=" text-[#121212] opacity-50 ">Hoje</h3>
+              </div>
+            </div>
             <div className=" z-10 w-full mb-20   ">
               {messageList.map((message, index) => (
                 <Message

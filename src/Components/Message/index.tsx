@@ -15,7 +15,7 @@ export default function Message(data: propsMessageData) {
         >
           <div className="  px-4 pt-4 pb-2 bg-[#4784DE] rounded-l-3xl rounded-b-3xl mr-3 flex  items-center">
             <div className=" mr-5 ">
-              <p className="text-white font-normal text-right max-w-[300px]">
+              <p className="text-white font-normal text-right max-w-[300px] break-words">
                 {data.text}
               </p>
               <h4 className="text-white text-[0.625rem] text-right">

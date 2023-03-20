@@ -27,12 +27,12 @@ export function NavigateSearch(data: NavigateSearchProps) {
   }
 
   return (
-    <div className="flex flex-row   w-28 justify-between items-center">
+    <div className="flex flex-row  w-20 md:w-28 justify-between items-center">
       <button onClick={() => RemovePosition()} className="hover:opacity-50">
-        <FaChevronDown size={30} color="#121212" className="opacity-70" />
+        <FaChevronDown size={25} color="#121212" className="opacity-70" />
       </button>
       <button onClick={() => AddPosition()} className="hover:opacity-50">
-        <FaChevronUp size={30} color="#121212" className="opacity-70" />
+        <FaChevronUp size={25} color="#121212" className="opacity-70" />
       </button>
     </div>
   )

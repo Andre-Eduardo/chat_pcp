@@ -21,6 +21,7 @@
     "react-icons": "^4.8.0",
     "react-native-web": "^0.18.12",
     "react-scripts": "5.0.1",
+    "sass": "^1.59.3",
     "typescript": "*",
     "web-vitals": "^2.1.4"
   },
