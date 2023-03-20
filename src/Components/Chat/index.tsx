@@ -117,69 +117,71 @@ export default function Chat() {
     }
   }
   function handleScrollToMessage(index: any) {
-    var text: any
-    messageRefs.current[index].scrollIntoView({ behavior: 'smooth' })
-    console.log(
-      messageRefs.current[index].children[0].children[0].children[0].innerText,
-    )
-    messageRefs.current[index].style.backgroundColor = 'rgb(75, 132, 222,0.4)'
+    if (messageRefs.current[index]) {
+      messageRefs.current[index].scrollIntoView({ behavior: 'smooth' })
+      messageRefs.current[index].style.backgroundColor = 'rgb(75, 132, 222,0.4)'
 
-    // Crie um novo elemento span com o estilo desejado
-    const span = document.createElement('span')
-    span.style.backgroundColor = 'yellow'
-    span.innerText = textInputSearch
+      // Crie um novo elemento span com o estilo desejado
+      const span = document.createElement('span')
+      span.style.backgroundColor = 'yellow'
+      span.innerText = textInputSearch
 
-    // Acesse o elemento que contém o texto usando a referência
-    const texto = messageRefs.current[index].children[0].children[0].children[0]
+      // Acesse o elemento que contém o texto usando a referência
+      const texto =
+        messageRefs.current[index].children[0].children[0].children[0]
 
-    // Encontre a posição do trecho que você quer substituir
-    const posicao = texto.innerText.indexOf(textInputSearch)
+      // Encontre a posição do trecho que você quer substituir
+      const posicao = texto.innerText.indexOf(textInputSearch)
 
-    // Crie um nó de texto com o conteúdo antes do trecho
-    const antes = document.createTextNode(texto.innerText.slice(0, posicao))
+      // Crie um nó de texto com o conteúdo antes do trecho
+      const antes = document.createTextNode(texto.innerText.slice(0, posicao))
 
-    // Crie um nó de texto com o conteúdo depois do trecho
-    const depois = document.createTextNode(
-      texto.innerText.slice(posicao + textInputSearch.length),
-    )
+      // Crie um nó de texto com o conteúdo depois do trecho
+      const depois = document.createTextNode(
+        texto.innerText.slice(posicao + textInputSearch.length),
+      )
 
-    // Remova todo o conteúdo do elemento que contém o texto
-    texto.innerHTML = ''
+      // Remova todo o conteúdo do elemento que contém o texto
+      texto.innerHTML = ''
 
-    // Adicione os nós de texto e o elemento span na ordem correta
-    texto.appendChild(antes)
-    texto.appendChild(span)
-    texto.appendChild(depois)
+      // Adicione os nós de texto e o elemento span na ordem correta
+      texto.appendChild(antes)
+      texto.appendChild(span)
+      texto.appendChild(depois)
+    }
   }
   function ClearSearchMessage(index: any) {
-    messageRefs.current[index].style.backgroundColor = ''
+    if (messageRefs.current[index]) {
+      messageRefs.current[index].style.backgroundColor = ''
 
-    // Crie um novo elemento span com o estilo desejado
-    const span = document.createElement('span')
-    span.style.backgroundColor = ''
-    span.innerText = textInputSearch
+      // Crie um novo elemento span com o estilo desejado
+      const span = document.createElement('span')
+      span.style.backgroundColor = ''
+      span.innerText = textInputSearch
 
-    // Acesse o elemento que contém o texto usando a referência
-    const texto = messageRefs.current[index].children[0].children[0].children[0]
+      // Acesse o elemento que contém o texto usando a referência
+      const texto =
+        messageRefs.current[index].children[0].children[0].children[0]
 
-    // Encontre a posição do trecho que você quer substituir
-    const posicao = texto.innerText.indexOf(textInputSearch)
+      // Encontre a posição do trecho que você quer substituir
+      const posicao = texto.innerText.indexOf(textInputSearch)
 
-    // Crie um nó de texto com o conteúdo antes do trecho
-    const antes = document.createTextNode(texto.innerText.slice(0, posicao))
+      // Crie um nó de texto com o conteúdo antes do trecho
+      const antes = document.createTextNode(texto.innerText.slice(0, posicao))
 
-    // Crie um nó de texto com o conteúdo depois do trecho
-    const depois = document.createTextNode(
-      texto.innerText.slice(posicao + textInputSearch.length),
-    )
+      // Crie um nó de texto com o conteúdo depois do trecho
+      const depois = document.createTextNode(
+        texto.innerText.slice(posicao + textInputSearch.length),
+      )
 
-    // Remova todo o conteúdo do elemento que contém o texto
-    texto.innerHTML = ''
+      // Remova todo o conteúdo do elemento que contém o texto
+      texto.innerHTML = ''
 
-    // Adicione os nós de texto e o elemento span na ordem correta
-    texto.appendChild(antes)
-    texto.appendChild(span)
-    texto.appendChild(depois)
+      // Adicione os nós de texto e o elemento span na ordem correta
+      texto.appendChild(antes)
+      texto.appendChild(span)
+      texto.appendChild(depois)
+    }
   }
 
   async function NavigateToMessage() {
