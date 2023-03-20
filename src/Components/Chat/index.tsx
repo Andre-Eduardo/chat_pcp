@@ -91,6 +91,12 @@ export default function Chat() {
   const [currentIndexSearch, setCurrentIndexSearch] = useState(0)
   const messageRefs = useRef<any>([])
 
+  useEffect(() => {
+    if (openSearch === false) {
+      ClearSearchMessage(currentIndexSearch)
+    }
+  }, [openSearch])
+
   function SubmitMessage(event: Event) {
     event.preventDefault()
     if (messageText) {
@@ -110,14 +116,36 @@ export default function Chat() {
       messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
   }
-  function handleScrollToMessage() {
-    messageRefs.current[currentIndexSearch].scrollIntoView({
+  function handleScrollToMessage(index: any) {
+    var text: any
+    messageRefs.current[index].scrollIntoView({
       behavior: 'smooth',
     })
+    console.log(
+      messageRefs.current[index].children[0].children[0].children[0].innerText,
+    )
+    messageRefs.current[index].style.backgroundColor = 'rgb(75, 132, 222,0.4)'
 
-    // messageRefs.current[currentIndexSearch].style.backgroundColor = 'green'
+    // Crie um novo elemento span com o estilo desejado
+    const span = document.createElement('span')
+    span.style.backgroundColor = 'yellow'
+    span.innerText = textInputSearch
+
+    // Acesse o elemento que contém o texto andre usando a referência
+    const texto = messageRefs.current[index].children[0].children[0].children[0]
+
+    // Remova o trecho "andre" do texto usando o método replace ()
+    texto.innerText = texto.innerText.replace(textInputSearch, '')
+
+    // Adicione o elemento span ao final do elemento que contém o texto
+    texto.appendChild(span)
   }
+  function ClearSearchMessage(index: any) {
+    messageRefs.current[index].style.backgroundColor = ''
+  }
+
   async function NavigateToMessage() {
+    ClearSearchMessage(currentIndexSearch)
     var posit: number[] = []
     const filteredArray = messageList.filter((obj: any, index: any) => {
       const lowercaseText = obj.text.toLowerCase()
@@ -128,11 +156,14 @@ export default function Chat() {
         return true
       }
     })
-    setIndexOfMessageSearch(posit)
+
+    const positReverse = posit.reverse()
+    console.log(positReverse)
+    setIndexOfMessageSearch(positReverse)
+    setCurrentIndexSearch(positReverse[0])
+    handleScrollToMessage(positReverse[0])
   }
-  useEffect(() => {
-    handleScrollToMessage()
-  }, [currentIndexSearch])
+
   return (
     <div className=" h-[100vh] bg-[#F2F2F2] ">
       <div className="  justify-center flex-col overscroll-y-none ">
@@ -163,6 +194,7 @@ export default function Chat() {
             <div>
               <Search
                 NavigateToMessage={NavigateToMessage}
+                ClearSearchMessage={ClearSearchMessage}
                 openSearch={openSearch}
                 setOpenSearch={setOpenSearch}
                 textInputSearch={textInputSearch}
@@ -174,6 +206,8 @@ export default function Chat() {
                 positionMessages={indexOfMessageSearch}
                 currentIndexSearch={currentIndexSearch}
                 setCurrentIndexSearch={setCurrentIndexSearch}
+                handleScrollToMessage={handleScrollToMessage}
+                ClearSearchMessage={ClearSearchMessage}
               />
             )}
           </section>
@@ -184,7 +218,7 @@ export default function Chat() {
           >
             <div className=" relative flex justify-center items-center h-2 mt-4  ">
               <a className="h-[1px] bg-[#707070]  w-full opacity-30 "></a>
-              <div className="absolute bg-[#E4E4E4] p-5">
+              <div className="absolute bg-[#E4E4E4] px-4">
                 <h3 className=" text-[#121212] opacity-50 ">Hoje</h3>
               </div>
             </div>

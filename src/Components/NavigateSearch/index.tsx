@@ -5,23 +5,29 @@ interface NavigateSearchProps {
   positionMessages?: any
   currentIndexSearch?: null | number
   setCurrentIndexSearch: any
+  handleScrollToMessage: any
+  ClearSearchMessage: any
 }
 export function NavigateSearch(data: NavigateSearchProps) {
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(1)
+  console.log('index', index)
+  console.log('array de busca', data.positionMessages)
+
   async function AddPosition() {
-    await setIndex(index + 1)
-    if (index <= data.positionMessages.length) {
-      await data.setCurrentIndexSearch(index)
-    } else {
-      setIndex(index - 1)
+    if (index < data.positionMessages.length) {
+      setIndex(index + 1)
+      data.ClearSearchMessage(data.positionMessages[index - 1])
+      data.handleScrollToMessage(data.positionMessages[index])
+      data.setCurrentIndexSearch(data.positionMessages[index])
     }
-    console.log(data.currentIndexSearch)
   }
 
   async function RemovePosition() {
-    if (index >= 0) {
-      await setIndex(index - 1)
-      await data.setCurrentIndexSearch(index)
+    if (index > 0) {
+      setIndex(index - 1)
+      data.ClearSearchMessage(data.positionMessages[index + 1])
+      data.handleScrollToMessage(data.positionMessages[index])
+      data.setCurrentIndexSearch(data.positionMessages[index])
     }
     console.log(index)
   }

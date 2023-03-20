@@ -8,7 +8,7 @@ export function Search({
   setOpenSearch,
   NavigateToMessage,
 }: any) {
-  function handleOpenSearch() {
+  function handleOpenSearch({}) {
     setOpenSearch(!openSearch)
   }
   function SearchText(event: any) {
@@ -17,6 +17,7 @@ export function Search({
     NavigateToMessage()
     // handleOpenSearch()
   }
+
   return (
     <>
       {openSearch ? (
