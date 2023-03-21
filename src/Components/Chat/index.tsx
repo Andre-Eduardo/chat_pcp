@@ -12,7 +12,7 @@ import { Header } from '../Header'
 export default function Chat() {
   let data = [
     {
-      text: 'andre',
+      text: 'teste',
       hour: '11:39',
       position: 'left',
     },
@@ -88,7 +88,7 @@ export default function Chat() {
   const [messageText, setMessageText] = useState('')
   const [openSearch, setOpenSearch] = useState(false)
   const [indexOfMessageSearch, setIndexOfMessageSearch] = useState<number[]>([])
-  const [currentIndexSearch, setCurrentIndexSearch] = useState(0)
+  const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
 
   useEffect(() => {
