@@ -7,6 +7,9 @@ interface NavigateSearchProps {
   setCurrentIndexSearch: any
   handleScrollToMessage: any
   ClearSearchMessage: any
+
+  messageRefs: any
+  textInputSearch: any
 }
 export function NavigateSearch(data: NavigateSearchProps) {
   const [index, setIndex] = useState(0)
@@ -17,8 +20,18 @@ export function NavigateSearch(data: NavigateSearchProps) {
   useEffect(() => {
     if (data.positionMessages && addPositionTriggered) {
       console.log('Adding position')
-      data.ClearSearchMessage(data.positionMessages[index - 1])
-      data.handleScrollToMessage(data.positionMessages[index])
+      data.ClearSearchMessage(
+        data.positionMessages[index - 1],
+        data.messageRefs,
+        data.textInputSearch,
+      )
+
+      data.handleScrollToMessage(
+        data.positionMessages[index],
+        data.messageRefs,
+        data.textInputSearch,
+      )
+
       data.setCurrentIndexSearch(data.positionMessages[index])
       setAddPositionTriggered(false)
     }
@@ -33,8 +46,16 @@ export function NavigateSearch(data: NavigateSearchProps) {
 
   useEffect(() => {
     if (data.positionMessages && removePositionTriggered) {
-      data.ClearSearchMessage(data.positionMessages[index + 1])
-      data.handleScrollToMessage(data.positionMessages[index])
+      data.ClearSearchMessage(
+        data.positionMessages[index + 1],
+        data.messageRefs,
+        data.textInputSearch,
+      )
+      data.handleScrollToMessage(
+        data.positionMessages[index],
+        data.messageRefs,
+        data.textInputSearch,
+      )
       data.setCurrentIndexSearch(data.positionMessages[index])
       setRemovePositionTriggered(false)
     }

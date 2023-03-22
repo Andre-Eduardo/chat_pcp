@@ -9,6 +9,8 @@ import { Input } from '../Input'
 import { Search } from '../Search'
 import { NavigateSearch } from '../NavigateSearch'
 import { Header } from '../Header'
+import { handleScrollToMessage } from '../../Functions/handleScrollToMessage'
+import { ClearSearchMessage } from '../../Functions/ClearSearchMessage'
 export default function Chat() {
   let data = [
     {
@@ -93,7 +95,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (openSearch === false) {
-      ClearSearchMessage(currentIndexSearch)
+      ClearSearchMessage(currentIndexSearch, messageRefs, textInputSearch)
     }
   }, [openSearch])
 
@@ -116,76 +118,9 @@ export default function Chat() {
       messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
   }
-  function handleScrollToMessage(index: any) {
-    if (messageRefs.current[index]) {
-      messageRefs.current[index].scrollIntoView({ behavior: 'smooth' })
-      messageRefs.current[index].style.backgroundColor = 'rgb(75, 132, 222,0.4)'
-
-      // Crie um novo elemento span com o estilo desejado
-      const span = document.createElement('span')
-      span.style.backgroundColor = 'yellow'
-      span.innerText = textInputSearch
-
-      // Acesse o elemento que contém o texto usando a referência
-      const texto =
-        messageRefs.current[index].children[0].children[0].children[0]
-
-      // Encontre a posição do trecho que você quer substituir
-      const posicao = texto.innerText.indexOf(textInputSearch)
-
-      // Crie um nó de texto com o conteúdo antes do trecho
-      const antes = document.createTextNode(texto.innerText.slice(0, posicao))
-
-      // Crie um nó de texto com o conteúdo depois do trecho
-      const depois = document.createTextNode(
-        texto.innerText.slice(posicao + textInputSearch.length),
-      )
-
-      // Remova todo o conteúdo do elemento que contém o texto
-      texto.innerHTML = ''
-
-      // Adicione os nós de texto e o elemento span na ordem correta
-      texto.appendChild(antes)
-      texto.appendChild(span)
-      texto.appendChild(depois)
-    }
-  }
-  function ClearSearchMessage(index: any) {
-    if (messageRefs.current[index]) {
-      messageRefs.current[index].style.backgroundColor = ''
-
-      // Crie um novo elemento span com o estilo desejado
-      const span = document.createElement('span')
-      span.style.backgroundColor = ''
-      span.innerText = textInputSearch
-
-      // Acesse o elemento que contém o texto usando a referência
-      const texto =
-        messageRefs.current[index].children[0].children[0].children[0]
-
-      // Encontre a posição do trecho que você quer substituir
-      const posicao = texto.innerText.indexOf(textInputSearch)
-
-      // Crie um nó de texto com o conteúdo antes do trecho
-      const antes = document.createTextNode(texto.innerText.slice(0, posicao))
-
-      // Crie um nó de texto com o conteúdo depois do trecho
-      const depois = document.createTextNode(
-        texto.innerText.slice(posicao + textInputSearch.length),
-      )
-
-      // Remova todo o conteúdo do elemento que contém o texto
-      texto.innerHTML = ''
-
-      // Adicione os nós de texto e o elemento span na ordem correta
-      texto.appendChild(antes)
-      texto.appendChild(span)
-      texto.appendChild(depois)
-    }
-  }
 
   async function NavigateToMessage() {
-    ClearSearchMessage(currentIndexSearch)
+    ClearSearchMessage(currentIndexSearch, messageRefs, textInputSearch)
     var posit: number[] = []
     const filteredArray = messageList.filter((obj: any, index: any) => {
       const lowercaseText = obj.text.toLowerCase()
@@ -201,7 +136,8 @@ export default function Chat() {
     console.log(positReverse)
     setIndexOfMessageSearch(positReverse)
     setCurrentIndexSearch(positReverse[0])
-    handleScrollToMessage(positReverse[0])
+
+    handleScrollToMessage(positReverse[0], messageRefs, textInputSearch)
   }
 
   return (
@@ -234,7 +170,6 @@ export default function Chat() {
             <div>
               <Search
                 NavigateToMessage={NavigateToMessage}
-                ClearSearchMessage={ClearSearchMessage}
                 openSearch={openSearch}
                 setOpenSearch={setOpenSearch}
                 textInputSearch={textInputSearch}
@@ -245,6 +180,8 @@ export default function Chat() {
               <NavigateSearch
                 positionMessages={indexOfMessageSearch}
                 currentIndexSearch={currentIndexSearch}
+                messageRefs={messageRefs}
+                textInputSearch={textInputSearch}
                 setCurrentIndexSearch={setCurrentIndexSearch}
                 handleScrollToMessage={handleScrollToMessage}
                 ClearSearchMessage={ClearSearchMessage}
