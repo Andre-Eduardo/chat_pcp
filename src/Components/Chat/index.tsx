@@ -12,68 +12,73 @@ import { Header } from '../Header'
 import { handleScrollToMessage } from '../../Functions/handleScrollToMessage'
 import { ClearSearchMessage } from '../../Functions/ClearSearchMessage'
 import { DateFormatted } from '../../Functions/DateFormatted'
+interface MessageProps {
+  Codigo: string
+  CodigoUsuario: string
+  CodigoItemProcesso: string
+  Mensagem: string
+  Visualizada: string
+  Criado: string
+  Editado: string
+  TipoUsuario: string
+}
+
 export default function Chat() {
-  interface MessageProps {
-    Codigo: string
-    CodigoUsuario: string
-    CodigoItemProcesso: string
-    Mensagem: string
-    Visualizada: string
-    Criado: string
-    Editado: string
-    position: string
+  let response = {
+    success: true,
+    Conversa: {
+      Codigo: '04632974-40c1-48b3-96bc-8b52c36493d4',
+      CodigoProcesso: '132312',
+      Status: 'aberto',
+      Criado: '2023-03-22 00:00:00',
+      Editado: '2023-03-22 00:00:00',
+      Comprador: {
+        Codigo: '6b6bb32d-ae20-4e61-88f9-921d661aa7f8',
+        CodigoUsuario: '312312',
+        TipoUsuario: 'comprador',
+      },
+      Fornecedor: {
+        Codigo: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+        CodigoUsuario: '51231231',
+        TipoUsuario: 'fornecedor',
+      },
+      Mensagens: [
+        {
+          Codigo: '205456de-9394-4605-8df3-556031a544d9',
+          CodigoUsuario: '6b6bb32d-ae20-4e61-88f9-921d661aa7f8',
+          CodigoItemProcesso: '1231231',
+          Mensagem: 'Texto da mensagem',
+          Visualizada: '2023-03-22 00:00:00.000',
+          Criado: '2023-03-22 00:00:00.000',
+          Editado: '2023-03-22 00:00:00.000',
+          TipoUsuario: 'comprador',
+        },
+        {
+          Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
+          CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+          CodigoItemProcesso: '1231231',
+          Mensagem: 'Texto da mensagem forncedor',
+          Visualizada: '2023-03-22 00:00:00.000',
+          Criado: '2023-03-22 00:00:00.000',
+          Editado: '2023-03-22 00:00:00.000',
+          TipoUsuario: 'comprador',
+        },
+      ],
+    },
   }
 
-  let data = [
-    {
-      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
-      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
-      CodigoItemProcesso: '1231231',
-      Mensagem: 'teste',
-      Visualizada: '2023-03-22 00:00:00.000',
-      Criado: '2023-03-22 00:00:00.000',
-      Editado: '2023-03-22 00:00:00.000',
-      position: 'left',
-    },
-    {
-      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
-      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
-      CodigoItemProcesso: '1231231',
-      Mensagem: 'teste',
-      Visualizada: '2023-03-22 00:00:00.000',
-      Criado: '2023-03-22 00:00:00.000',
-      Editado: '2023-03-22 00:00:00.000',
-      position: 'left',
-    },
-    {
-      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
-      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
-      CodigoItemProcesso: '1231231',
-      Mensagem: 'teste',
-      Visualizada: '2023-03-22 00:00:00.000',
-      Criado: '2023-03-22 00:00:00.000',
-      Editado: '2023-03-22 00:00:00.000',
-      position: 'left',
-    },
-    {
-      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
-      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
-      CodigoItemProcesso: '1231231',
-      Mensagem: 'teste',
-      Visualizada: '2023-03-22 00:00:00.000',
-      Criado: '2023-03-22 00:00:00.000',
-      Editado: '2023-03-22 00:00:00.000',
-      position: 'left',
-    },
-  ]
   const [textInputSearch, setTextInputSearch] = useState('')
   const messageListRef = useRef<any>(null)
-  const [messageList, setMessageList] = useState<MessageProps[]>(data)
+  const [messageList, setMessageList] = useState<MessageProps[]>([])
   const [messageText, setMessageText] = useState('')
   const [openSearch, setOpenSearch] = useState(false)
   const [indexOfMessageSearch, setIndexOfMessageSearch] = useState<number[]>([])
   const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
+
+  useEffect(() => {
+    setMessageList(response.Conversa.Mensagens)
+  }, [])
 
   useEffect(() => {
     if (openSearch === false) {
@@ -95,10 +100,11 @@ export default function Chat() {
           Visualizada: '2023-03-22 00:00:00.000',
           Criado: DateFormatted(),
           Editado: '2023-03-22 00:00:00.000',
-          position: 'left',
+          TipoUsuario: 'fornecedor',
         },
       ])
       setMessageText('')
+      // navega para ultima mensagem enviada
       const messageListDiv = messageListRef.current
       const scrollHeight = messageListDiv.scrollHeight
       const height = messageListDiv.clientHeight
@@ -106,7 +112,7 @@ export default function Chat() {
       messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
   }
-
+  // navega para a mensagem que estar sendo buscada
   async function NavigateToMessage() {
     ClearSearchMessage(currentIndexSearch, messageRefs, textInputSearch)
     var posit: number[] = []
@@ -120,11 +126,10 @@ export default function Chat() {
       }
     })
 
-    const positReverse = posit.reverse()
-    console.log(positReverse)
+    const positReverse = posit.reverse() // começa pela ultima mensagem
+
     setIndexOfMessageSearch(positReverse)
     setCurrentIndexSearch(positReverse[0])
-
     handleScrollToMessage(positReverse[0], messageRefs, textInputSearch)
   }
 
@@ -192,11 +197,12 @@ export default function Chat() {
                 <Message
                   reference={(el: any) => (messageRefs.current[index] = el)}
                   key={index}
-                  position={item.position}
+                  position="left"
                   Mensagem={item.Mensagem}
                   Criado={item.Criado}
                   CodigoUsuario={item.CodigoUsuario}
                   Codigo={item.Codigo}
+                  TipoUsuario={item.TipoUsuario}
                 />
               ))}
             </div>
