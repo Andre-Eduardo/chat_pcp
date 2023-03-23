@@ -15,72 +15,63 @@ export default function Chat() {
   let data = [
     {
       text: 'teste',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
-      text: 'é preciso que você envie hoje antes de meio dia',
-      hour: '11:39',
+      text: 'é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
-    {
-      text: 'Certo, estou coletando as informações. Assim que possível irei mandar elas.',
-      hour: '11:39',
-      position: 'right',
-    },
-    {
-      text: 'Atenciosamente Davi Nogueira.',
-      hour: '11:39',
-      position: 'right',
-    },
+
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
     {
       text: 'Olá, estou no aguardo das informações',
-      hour: '11:39',
+      date: '106/03/2023 - 15:19:61',
       position: 'left',
     },
   ]
@@ -106,7 +97,7 @@ export default function Chat() {
         ...messageList,
         {
           text: messageText,
-          hour: '11:39',
+          date: '11:39',
           position: 'right',
         },
       ])
@@ -205,7 +196,7 @@ export default function Chat() {
                   reference={(el: any) => (messageRefs.current[index] = el)}
                   key={index}
                   text={message.text}
-                  hour={message.hour}
+                  date={message.date}
                   position={message.position}
                 />
               ))}
