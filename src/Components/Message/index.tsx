@@ -1,10 +1,13 @@
 import React from 'react'
 interface propsMessageData {
-  text: string
-  date: string
+  Mensagem: string
+  Criado: string
   position: string
   reference: any
+  CodigoUsuario: string
+  Codigo: string
 }
+
 export default function Message(data: propsMessageData) {
   return (
     <>
@@ -16,10 +19,10 @@ export default function Message(data: propsMessageData) {
           <div className="  px-4 pt-4 pb-2 bg-[#4784DE] rounded-l-3xl rounded-b-3xl mr-3 flex  items-center">
             <div className=" mr-5 ">
               <p className="text-white font-normal text-right max-w-[300px] break-words">
-                {data.text}
+                {data.Mensagem}
               </p>
               <h4 className="text-white text-[0.625rem] text-right">
-                {data.date}
+                {data.Criado}
               </h4>
             </div>
           </div>
@@ -29,10 +32,10 @@ export default function Message(data: propsMessageData) {
           <div className=" max-w-[95%] px-4 pt-4 pb-2 bg-[#FFFFFF] rounded-r-3xl rounded-b-3xl ml-3 flex  items-center">
             <div className=" mr-5 ">
               <p className="text-[#121212] opacity-50 font-normal text-left ">
-                {data.text}
+                {data.Mensagem}
               </p>
               <h4 className="text-[#121212] pt-2 opacity-50 text-sm text-left">
-                {data.date}
+                {data.Criado}
               </h4>
             </div>
           </div>

@@ -11,73 +11,64 @@ import { NavigateSearch } from '../NavigateSearch'
 import { Header } from '../Header'
 import { handleScrollToMessage } from '../../Functions/handleScrollToMessage'
 import { ClearSearchMessage } from '../../Functions/ClearSearchMessage'
+import { DateFormatted } from '../../Functions/DateFormatted'
 export default function Chat() {
+  interface MessageProps {
+    Codigo: string
+    CodigoUsuario: string
+    CodigoItemProcesso: string
+    Mensagem: string
+    Visualizada: string
+    Criado: string
+    Editado: string
+    position: string
+  }
+
   let data = [
     {
-      text: 'teste',
-      date: '106/03/2023 - 15:19:61',
+      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
+      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+      CodigoItemProcesso: '1231231',
+      Mensagem: 'teste',
+      Visualizada: '2023-03-22 00:00:00.000',
+      Criado: '2023-03-22 00:00:00.000',
+      Editado: '2023-03-22 00:00:00.000',
       position: 'left',
     },
     {
-      text: 'é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia é preciso que você envie hoje antes de meio dia',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
+      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
+      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+      CodigoItemProcesso: '1231231',
+      Mensagem: 'teste',
+      Visualizada: '2023-03-22 00:00:00.000',
+      Criado: '2023-03-22 00:00:00.000',
+      Editado: '2023-03-22 00:00:00.000',
       position: 'left',
     },
     {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
+      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
+      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+      CodigoItemProcesso: '1231231',
+      Mensagem: 'teste',
+      Visualizada: '2023-03-22 00:00:00.000',
+      Criado: '2023-03-22 00:00:00.000',
+      Editado: '2023-03-22 00:00:00.000',
       position: 'left',
     },
     {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
-      position: 'left',
-    },
-    {
-      text: 'Olá, estou no aguardo das informações',
-      date: '106/03/2023 - 15:19:61',
+      Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
+      CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+      CodigoItemProcesso: '1231231',
+      Mensagem: 'teste',
+      Visualizada: '2023-03-22 00:00:00.000',
+      Criado: '2023-03-22 00:00:00.000',
+      Editado: '2023-03-22 00:00:00.000',
       position: 'left',
     },
   ]
   const [textInputSearch, setTextInputSearch] = useState('')
   const messageListRef = useRef<any>(null)
-  const [messageList, setMessageList] = useState(data)
+  const [messageList, setMessageList] = useState<MessageProps[]>(data)
   const [messageText, setMessageText] = useState('')
   const [openSearch, setOpenSearch] = useState(false)
   const [indexOfMessageSearch, setIndexOfMessageSearch] = useState<number[]>([])
@@ -92,13 +83,19 @@ export default function Chat() {
 
   function SubmitMessage(event: Event) {
     event.preventDefault()
+
     if (messageText) {
       setMessageList([
         ...messageList,
         {
-          text: messageText,
-          date: '11:39',
-          position: 'right',
+          Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
+          CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+          CodigoItemProcesso: '1231231',
+          Mensagem: messageText,
+          Visualizada: '2023-03-22 00:00:00.000',
+          Criado: DateFormatted(),
+          Editado: '2023-03-22 00:00:00.000',
+          position: 'left',
         },
       ])
       setMessageText('')
@@ -191,13 +188,15 @@ export default function Chat() {
               </div>
             </div>
             <div className=" z-10 w-full mb-20 md:px-6   ">
-              {messageList.map((message, index) => (
+              {messageList.map((item, index) => (
                 <Message
                   reference={(el: any) => (messageRefs.current[index] = el)}
                   key={index}
-                  text={message.text}
-                  date={message.date}
-                  position={message.position}
+                  position={item.position}
+                  Mensagem={item.Mensagem}
+                  Criado={item.Criado}
+                  CodigoUsuario={item.CodigoUsuario}
+                  Codigo={item.Codigo}
                 />
               ))}
             </div>
