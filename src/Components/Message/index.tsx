@@ -26,12 +26,12 @@ export default function Message(data: propsMessageData) {
         </div>
       ) : (
         <div ref={data.reference} className="container w-full flex  mt-2">
-          <div className="  px-4 pt-4 pb-2 bg-[#FFFFFF] rounded-r-3xl rounded-b-3xl ml-3 flex  items-center">
+          <div className=" max-w-[95%] px-4 pt-4 pb-2 bg-[#FFFFFF] rounded-r-3xl rounded-b-3xl ml-3 flex  items-center">
             <div className=" mr-5 ">
-              <p className="text-[#121212] opacity-50 font-normal text-left max-w-[600px]">
+              <p className="text-[#121212] opacity-50 font-normal text-left ">
                 {data.text}
               </p>
-              <h4 className="text-[#121212] pt-2 opacity-50 text-sm text-right">
+              <h4 className="text-[#121212] pt-2 opacity-50 text-sm text-left">
                 {data.date}
               </h4>
             </div>

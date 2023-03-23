@@ -133,10 +133,10 @@ export default function Chat() {
 
   return (
     <div className=" h-[100vh] bg-[#F2F2F2] ">
-      <div className="  justify-center flex-col overscroll-y-none ">
+      <div className="  justify-center flex-col  ">
         <Header />
-        <div className="container   h-[100vh] mx-auto overscroll-y-contain max-w-[43rem] bg-[#E4E4E4] flex flex-col items-center justify-between">
-          <section className=" px-3 md:px-9 h-[4.6rem] bg-white w-full max-w-[43rem] flex flex-row  justify-between items-center ">
+        <div className="  h-[100vh] mx-auto overscroll-y-contain   bg-[#E4E4E4] flex flex-col items-center ">
+          <section className=" px-3 md:px-9 h-[4.6rem] bg-white w-full  flex flex-row  justify-between items-center ">
             {!openSearch && (
               <div className="flex flex-row">
                 <div className="relative">
@@ -190,7 +190,7 @@ export default function Chat() {
                 <h3 className=" text-[#121212] opacity-50 ">Hoje</h3>
               </div>
             </div>
-            <div className=" z-10 w-full mb-20   ">
+            <div className=" z-10 w-full mb-20 md:px-6   ">
               {messageList.map((message, index) => (
                 <Message
                   reference={(el: any) => (messageRefs.current[index] = el)}
@@ -202,7 +202,7 @@ export default function Chat() {
               ))}
             </div>
           </div>
-          <footer className="fixed max-w-[43rem]  md:px-3 w-full  bottom-0 bg-[#E4E4E4] ">
+          <footer className="fixed   md:px-8 w-full  bottom-0 bg-[#E4E4E4] ">
             <div className="md:mb-3">
               <Input
                 text={messageText}
