@@ -8,5 +8,10 @@ export function DateFormatted() {
   // var milissegundos = data.getMilliseconds().toString().padStart(3, '0')
   var HourFormatted = hour + ':' + minutos + ':' + segundos
 
+  //formato do servidor
+  // var date = new Date()
+  // var isoDate = date.toISOString()
+
   return `${dateFormatted} ${HourFormatted}`
+  // return isoDate
 }

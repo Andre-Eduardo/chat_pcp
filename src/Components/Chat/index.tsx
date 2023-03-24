@@ -14,59 +14,17 @@ import { ClearSearchMessage } from '../../Functions/ClearSearchMessage'
 import { DateFormatted } from '../../Functions/DateFormatted'
 interface MessageProps {
   Codigo: string
-  CodigoUsuario: string
-  CodigoItemProcesso: string
+  // CodigoUsuario: string
   Mensagem: string
   Visualizada: string
+  CodigoItemProcesso: string
   Criado: string
   Editado: string
-  TipoUsuario: string
+  Conversa: 'string'
+  // TipoUsuario: string
 }
 
-export default function Chat() {
-  let response = {
-    success: true,
-    Conversa: {
-      Codigo: '04632974-40c1-48b3-96bc-8b52c36493d4',
-      CodigoProcesso: '132312',
-      Status: 'aberto',
-      Criado: '2023-03-22 00:00:00',
-      Editado: '2023-03-22 00:00:00',
-      Comprador: {
-        Codigo: '6b6bb32d-ae20-4e61-88f9-921d661aa7f8',
-        CodigoUsuario: '312312',
-        TipoUsuario: 'comprador',
-      },
-      Fornecedor: {
-        Codigo: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
-        CodigoUsuario: '51231231',
-        TipoUsuario: 'fornecedor',
-      },
-      Mensagens: [
-        {
-          Codigo: '205456de-9394-4605-8df3-556031a544d9',
-          CodigoUsuario: '6b6bb32d-ae20-4e61-88f9-921d661aa7f8',
-          CodigoItemProcesso: '1231231',
-          Mensagem: 'Texto da mensagem',
-          Visualizada: '2023-03-22 00:00:00.000',
-          Criado: '2023-03-22 00:00:00.000',
-          Editado: '2023-03-22 00:00:00.000',
-          TipoUsuario: 'comprador',
-        },
-        {
-          Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
-          CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
-          CodigoItemProcesso: '1231231',
-          Mensagem: 'Texto da mensagem forncedor',
-          Visualizada: '2023-03-22 00:00:00.000',
-          Criado: '2023-03-22 00:00:00.000',
-          Editado: '2023-03-22 00:00:00.000',
-          TipoUsuario: 'comprador',
-        },
-      ],
-    },
-  }
-
+export default function Chat({ response }: any) {
   const [textInputSearch, setTextInputSearch] = useState('')
   const messageListRef = useRef<any>(null)
   const [messageList, setMessageList] = useState<MessageProps[]>([])
@@ -75,9 +33,11 @@ export default function Chat() {
   const [indexOfMessageSearch, setIndexOfMessageSearch] = useState<number[]>([])
   const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
+  const [numProcesso, setNumProcesso] = useState('')
 
   useEffect(() => {
     setMessageList(response.Conversa.Mensagens)
+    setNumProcesso(response.Conversa.CodigoProcesso)
   }, [])
 
   useEffect(() => {
@@ -94,13 +54,14 @@ export default function Chat() {
         ...messageList,
         {
           Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
-          CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+          // CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
           CodigoItemProcesso: '1231231',
           Mensagem: messageText,
           Visualizada: '2023-03-22 00:00:00.000',
           Criado: DateFormatted(),
           Editado: '2023-03-22 00:00:00.000',
-          TipoUsuario: 'fornecedor',
+          Conversa: 'string',
+          // TipoUsuario: 'fornecedor',
         },
       ])
       setMessageText('')
@@ -155,7 +116,7 @@ export default function Chat() {
                     Caroline Carvalho
                   </h3>
                   <h4 className="text-[#A8A8A8] text-xs">
-                    Processo 1234567 | Item 654321
+                    Processo {numProcesso} | Item 654321
                   </h4>
                 </div>
               </div>
@@ -200,9 +161,9 @@ export default function Chat() {
                   position="left"
                   Mensagem={item.Mensagem}
                   Criado={item.Criado}
-                  CodigoUsuario={item.CodigoUsuario}
+                  // CodigoUsuario={item.CodigoUsuario}
                   Codigo={item.Codigo}
-                  TipoUsuario={item.TipoUsuario}
+                  // TipoUsuario={item.TipoUsuario}
                 />
               ))}
             </div>
