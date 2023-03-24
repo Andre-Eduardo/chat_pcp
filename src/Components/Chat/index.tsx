@@ -180,11 +180,11 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
    await rest.data.map(async (item : any, index : any) => {
       await response.Usuarios.map((data : any) => {
        if (data.CodigoUsuario == item.CodigoUsuario) {
-         rest.data[index].TipoUsuario = data.TipoUsuario == 'comprador' ? 'Sistema' : 'Fornecedor'
+         rest.data[index].TipoUsuario = data.TipoUsuario === 'comprador' ? 'Sistema' : 'Fornecedor'
        }
      })
    })
-   console.log(rest.data)
+   console.log(rest)
    setMessageList(rest.data)
  }
 
