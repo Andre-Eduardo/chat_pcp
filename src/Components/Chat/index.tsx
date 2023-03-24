@@ -131,7 +131,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
             Editado: '2023-03-22 00:00:00.000',
             Conversa: 'string',
             CodigoUsuario: '400',
-            TipoUsuario: 'fornecedor',
+            TipoUsuario: tokenDecode.role[0] === 'comprador' ? 'Sistema' : tokenDecode.nome_fornecedor,
           },
         ])
       }
@@ -168,95 +168,123 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }
 
-  return (
-    <div className=" h-[100vh] bg-[#F2F2F2] ">
-      <div className="  justify-center flex-col  ">
-        <Header />
-        <div className="  h-[100vh] mx-auto overscroll-y-contain   bg-[#E4E4E4] flex flex-col items-center ">
-          <section className=" px-3 md:px-9 h-[4.6rem] bg-white w-full  flex flex-row  justify-between items-center ">
-            {!openSearch && (
-              <div className="flex flex-row">
-                <div className="relative">
-                  <Avatar
-                    src="https://avatars.githubusercontent.com/u/80540635?v=4"
-                    alt="avatar"
-                    size="xlarge"
-                    type="rounded"
-                  />
-                  <div className="absolute w-3 h-3 bg-[#47DC44] rounded-full top-9 right-1"></div>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-black font-semibold text-lg">
-                    {NameChat}
-                  </h3>
-                  <h4 className="text-[#A8A8A8] text-xs">
-                    Processo: {tokenDecode.processo_numero} | Item:{' '}
-                    {tokenDecode.processo_item_numero} | Valor: R$
-                    {tokenDecode.processo_item_valor} | Descrição:{' '}
-                    {tokenDecode.processo_item_descricao}
-                  </h4>
-                </div>
-              </div>
-            )}
-            <div>
-              <Search
-                NavigateToMessage={NavigateToMessage}
-                openSearch={openSearch}
-                setOpenSearch={setOpenSearch}
-                textInputSearch={textInputSearch}
-                setTextInputSearch={setTextInputSearch}
-              />
-            </div>
-            {openSearch && (
-              <NavigateSearch
-                positionMessages={indexOfMessageSearch}
-                currentIndexSearch={currentIndexSearch}
-                messageRefs={messageRefs}
-                textInputSearch={textInputSearch}
-                setCurrentIndexSearch={setCurrentIndexSearch}
-                handleScrollToMessage={handleScrollToMessage}
-                ClearSearchMessage={ClearSearchMessage}
-              />
-            )}
-          </section>
 
-          <div
-            ref={messageListRef}
-            className="h-[100vh] w-full overflow-y-scroll  mb-16   "
-          >
-            <div className=" relative flex justify-center items-center h-2 mt-4  ">
-              <a className="h-[1px] bg-[#707070]  w-full opacity-30 "></a>
-              <div className="absolute bg-[#E4E4E4] px-4">
-                <h3 className=" text-[#121212] opacity-50 ">Hoje</h3>
+
+  async function Loop() {
+    let rest = await api.get(`/api/mensagem?codigoConversa=${response.Codigo}`, {
+     headers: {
+       Authorization: `Bearer ${tokenJWT}`,
+     },
+   })
+
+   await rest.data.map(async (item : any, index : any) => {
+      await response.Usuarios.map((data : any) => {
+       if (data.CodigoUsuario == item.CodigoUsuario) {
+         rest.data[index].TipoUsuario = data.TipoUsuario == 'comprador' ? 'Sistema' : 'Fornecedor'
+       }
+     })
+   })
+   console.log(rest.data)
+   setMessageList(rest.data)
+ }
+
+ useEffect(() => {
+   setInterval( () => {
+     if (response?.Codigo) {
+       Loop()
+     }
+   }, 5000 )
+ }, [response])
+
+ return (
+  <div className=" h-[100vh] bg-[#F2F2F2] ">
+    <div className="  justify-center flex-col  ">
+      <Header />
+      <div className="  h-[100vh] mx-auto overscroll-y-contain bg-[#E4E4E4] flex flex-col items-center ">
+        <section className=" px-3 md:px-9 h-[4.6rem] bg-white w-full flex flex-row justify-between items-center ">
+          {!openSearch && (
+            <div className="flex flex-row">
+              <div className="relative">
+                <Avatar
+                  src="https://avatars.githubusercontent.com/u/80540635?v=4"
+                  alt="avatar"
+                  size="xlarge"
+                  type="rounded"
+                />
+                <div className="absolute w-3 h-3 bg-[#47DC44] rounded-full top-9 right-1"></div>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-black font-semibold text-lg">
+                  {NameChat}
+                </h3>
+                <h4 className="text-[#A8A8A8] text-xs">
+                  Processo: {tokenDecode.processo_numero} | Item:{' '}
+                  {tokenDecode.processo_item_numero} | Valor: R$
+                  {tokenDecode.processo_item_valor} | Descrição:{' '}
+                  {tokenDecode.processo_item_descricao}
+                </h4>
               </div>
             </div>
-            <div className=" z-10 w-full mb-20 md:px-6   ">
-              {messageList !== null &&
-                messageList.map((item, index) => (
-                  <Message
-                    reference={(el: any) => (messageRefs.current[index] = el)}
-                    key={index}
-                    position="left"
-                    Mensagem={item.Mensagem}
-                    Criado={item.Criado}
-                    // CodigoUsuario={item.CodigoUsuario}
-                    CodigoConversa={item.CodigoConversa}
-                    TipoUsuario={item.TipoUsuario}
-                  />
-                ))}
+          )}
+          <div>
+            <Search
+              NavigateToMessage={NavigateToMessage}
+              openSearch={openSearch}
+              setOpenSearch={setOpenSearch}
+              textInputSearch={textInputSearch}
+              setTextInputSearch={setTextInputSearch}
+            />
+          </div>
+          {openSearch && (
+            <NavigateSearch
+              positionMessages={indexOfMessageSearch}
+              currentIndexSearch={currentIndexSearch}
+              messageRefs={messageRefs}
+              textInputSearch={textInputSearch}
+              setCurrentIndexSearch={setCurrentIndexSearch}
+              handleScrollToMessage={handleScrollToMessage}
+              ClearSearchMessage={ClearSearchMessage}
+            />
+          )}
+        </section>
+
+        <div
+          ref={messageListRef}
+          className="h-[100vh] w-full overflow-y-scroll mb-16 "
+        >
+          <div className=" relative flex justify-center items-center h-2 mt-4  ">
+            <a className="h-[1px] bg-[#707070] w-full opacity-30 "></a>
+            <div className="absolute bg-[#E4E4E4] px-4">
+              <h3 className=" text-[#121212] opacity-50 ">Hoje</h3>
             </div>
           </div>
-          <footer className="fixed   md:px-8 w-full  bottom-0 bg-[#E4E4E4] ">
-            <div className="md:mb-3">
-              <Input
-                text={messageText}
-                handleText={setMessageText}
-                click={SubmitMessage}
-              />
-            </div>
-          </footer>
+          <div className=" z-10 w-full mb-20 md:px-6   ">
+            { (messageList !== null && messageList?.length > 0) &&
+              messageList.map((item, index) => (
+                <Message
+                  reference={(el: any) => (messageRefs.current[index] = el)}
+                  key={index}
+                  position="left"
+                  Mensagem={item.Mensagem}
+                  Criado={item.Criado}
+                  // CodigoUsuario={item.CodigoUsuario}
+                  CodigoConversa={item.CodigoConversa}
+                  TipoUsuario={item.TipoUsuario}
+                />
+              ))}
+          </div>
         </div>
+        <footer className="fixed   md:px-8 w-full  bottom-0 bg-[#E4E4E4] ">
+          <div className="md:mb-3">
+            <Input
+              text={messageText}
+              handleText={setMessageText}
+              click={SubmitMessage}
+            />
+          </div>
+        </footer>
       </div>
     </div>
-  )
+  </div>
+)
 }
