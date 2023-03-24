@@ -12,33 +12,101 @@ import { Header } from '../Header'
 import { handleScrollToMessage } from '../../Functions/handleScrollToMessage'
 import { ClearSearchMessage } from '../../Functions/ClearSearchMessage'
 import { DateFormatted } from '../../Functions/DateFormatted'
+import api from '../../services/api'
 interface MessageProps {
-  Codigo: string
-  // CodigoUsuario: string
+  CodigoConversa: string
+  CodigoUsuario: string
   Mensagem: string
   Visualizada: string
   CodigoItemProcesso: string
   Criado: string
   Editado: string
   Conversa: 'string'
-  // TipoUsuario: string
+  TipoUsuario?: string
 }
 
-export default function Chat({ response }: any) {
+export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [textInputSearch, setTextInputSearch] = useState('')
   const messageListRef = useRef<any>(null)
-  const [messageList, setMessageList] = useState<MessageProps[]>([])
+  const [messageList, setMessageList] = useState<MessageProps[] | null>(null)
   const [messageText, setMessageText] = useState('')
   const [openSearch, setOpenSearch] = useState(false)
   const [indexOfMessageSearch, setIndexOfMessageSearch] = useState<number[]>([])
   const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
   const [numProcesso, setNumProcesso] = useState('')
+  const [NameChat, setNameChat] = useState('')
+  // envio de mensagem para api
+  async function PostMessage(message: string) {
+    const data = {
+      CodigoConversa: response.Codigo,
+      Mensagem: message,
+    }
+    let rest = await api.post(`/api/mensagem`, data, {
+      headers: {
+        Authorization: `Bearer ${tokenJWT}`,
+      },
+    })
+    console.log(rest)
+  }
 
   useEffect(() => {
-    setMessageList(response.Conversa.Mensagens)
-    setNumProcesso(response.Conversa.CodigoProcesso)
+    setMessageList(response.Mensagens)
+    if (messageList !== null) {
+      setMessageList(response.Mensagens)
+    } else {
+      setMessageList([])
+    }
+
+    setNumProcesso(response.CodigoProcesso)
   }, [])
+
+  useEffect(() => {
+    if (tokenDecode.role) {
+      const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
+      const nomeFornecedor = tokenDecode.nome_fornecedor || 'Fornecedor'
+
+      const nome = tokenDecode.role.find((e: any) => {
+        if (e === 'comprador') {
+          setNameChat(nomeFornecedor)
+        } else if (e === 'fornecedor') {
+          setNameChat(nomeComprador)
+        }
+      })
+    }
+  }, [tokenDecode])
+
+  useEffect(() => {
+    if (tokenDecode) {
+      var listaMensagem = response.Mensagens
+      console.log(listaMensagem)
+      response.Usuarios.map((user: any) => {
+        if (user.TipoUsuario === 'fornecedor') {
+          listaMensagem?.map((mensagem: any) => {
+            if (mensagem.CodigoUsuario === user.CodigoUsuario) {
+              mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+            }
+          })
+        } else if (user.TipoUsuario === 'comprador') {
+          listaMensagem?.map((mensagem: any) => {
+            console.log(mensagem.CodigoUsuario, user.CodigoUsuario)
+            if (mensagem.CodigoUsuario === user.CodigoUsuario) {
+              mensagem.TipoUsuario = 'sistema'
+            }
+          })
+        }
+      })
+    }
+  }, [response])
+
+  useEffect(() => {
+    setMessageList(response.Mensagens)
+    if (messageList !== null) {
+      setMessageList(response.Mensagens)
+    } else {
+      setMessageList([])
+    }
+  }, [response.Mensagens])
 
   useEffect(() => {
     if (openSearch === false) {
@@ -50,20 +118,23 @@ export default function Chat({ response }: any) {
     event.preventDefault()
 
     if (messageText) {
-      setMessageList([
-        ...messageList,
-        {
-          Codigo: 'db758d6f-9e2e-4c19-aad7-4a7c2a2a184a',
-          // CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
-          CodigoItemProcesso: '1231231',
-          Mensagem: messageText,
-          Visualizada: '2023-03-22 00:00:00.000',
-          Criado: DateFormatted(),
-          Editado: '2023-03-22 00:00:00.000',
-          Conversa: 'string',
-          // TipoUsuario: 'fornecedor',
-        },
-      ])
+      if (messageList !== null) {
+        setMessageList([
+          ...messageList,
+          {
+            CodigoConversa: response.Codigo,
+            // CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
+            CodigoItemProcesso: '1231231',
+            Mensagem: messageText,
+            Visualizada: '2023-03-22 00:00:00.000',
+            Criado: DateFormatted(),
+            Editado: '2023-03-22 00:00:00.000',
+            Conversa: 'string',
+            CodigoUsuario: '400',
+            TipoUsuario: 'fornecedor',
+          },
+        ])
+      }
       setMessageText('')
       // navega para ultima mensagem enviada
       const messageListDiv = messageListRef.current
@@ -72,26 +143,29 @@ export default function Chat({ response }: any) {
       const maxScrollTop = scrollHeight - height
       messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
+    PostMessage(messageText)
   }
   // navega para a mensagem que estar sendo buscada
   async function NavigateToMessage() {
     ClearSearchMessage(currentIndexSearch, messageRefs, textInputSearch)
     var posit: number[] = []
-    const filteredArray = messageList.filter((obj: any, index: any) => {
-      const lowercaseText = obj.text.toLowerCase()
-      const lowercaseSearchText = textInputSearch.toLowerCase()
-      if (lowercaseText.indexOf(lowercaseSearchText) !== -1) {
-        obj.positionInArray = index
-        posit.push(index)
-        return true
-      }
-    })
+    if (messageList !== null) {
+      const filteredArray = messageList.filter((obj: any, index: any) => {
+        const lowercaseText = obj.text.toLowerCase()
+        const lowercaseSearchText = textInputSearch.toLowerCase()
+        if (lowercaseText.indexOf(lowercaseSearchText) !== -1) {
+          obj.positionInArray = index
+          posit.push(index)
+          return true
+        }
+      })
 
-    const positReverse = posit.reverse() // começa pela ultima mensagem
+      const positReverse = posit.reverse() // começa pela ultima mensagem
 
-    setIndexOfMessageSearch(positReverse)
-    setCurrentIndexSearch(positReverse[0])
-    handleScrollToMessage(positReverse[0], messageRefs, textInputSearch)
+      setIndexOfMessageSearch(positReverse)
+      setCurrentIndexSearch(positReverse[0])
+      handleScrollToMessage(positReverse[0], messageRefs, textInputSearch)
+    }
   }
 
   return (
@@ -113,10 +187,13 @@ export default function Chat({ response }: any) {
                 </div>
                 <div className="ml-3">
                   <h3 className="text-black font-semibold text-lg">
-                    Caroline Carvalho
+                    {NameChat}
                   </h3>
                   <h4 className="text-[#A8A8A8] text-xs">
-                    Processo {numProcesso} | Item 654321
+                    Processo: {tokenDecode.processo_numero} | Item:{' '}
+                    {tokenDecode.processo_item_numero} | Valor: R$
+                    {tokenDecode.processo_item_valor} | Descrição:{' '}
+                    {tokenDecode.processo_item_descricao}
                   </h4>
                 </div>
               </div>
@@ -154,18 +231,19 @@ export default function Chat({ response }: any) {
               </div>
             </div>
             <div className=" z-10 w-full mb-20 md:px-6   ">
-              {messageList.map((item, index) => (
-                <Message
-                  reference={(el: any) => (messageRefs.current[index] = el)}
-                  key={index}
-                  position="left"
-                  Mensagem={item.Mensagem}
-                  Criado={item.Criado}
-                  // CodigoUsuario={item.CodigoUsuario}
-                  Codigo={item.Codigo}
-                  // TipoUsuario={item.TipoUsuario}
-                />
-              ))}
+              {messageList !== null &&
+                messageList.map((item, index) => (
+                  <Message
+                    reference={(el: any) => (messageRefs.current[index] = el)}
+                    key={index}
+                    position="left"
+                    Mensagem={item.Mensagem}
+                    Criado={item.Criado}
+                    // CodigoUsuario={item.CodigoUsuario}
+                    CodigoConversa={item.CodigoConversa}
+                    TipoUsuario={item.TipoUsuario}
+                  />
+                ))}
             </div>
           </div>
           <footer className="fixed   md:px-8 w-full  bottom-0 bg-[#E4E4E4] ">

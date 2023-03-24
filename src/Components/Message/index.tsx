@@ -5,8 +5,8 @@ interface propsMessageData {
   position: string
   reference: any
   // CodigoUsuario: string
-  Codigo: string
-  // TipoUsuario: string
+  CodigoConversa: string
+  TipoUsuario: string | undefined
 }
 
 export default function Message(data: propsMessageData) {
@@ -33,7 +33,7 @@ export default function Message(data: propsMessageData) {
         <div className=" max-w-[95%] px-4 pt-4 pb-2 bg-[#FFFFFF] rounded-r-3xl rounded-b-3xl ml-3 flex  items-center">
           <div className=" mr-5 ">
             <h3 className="capitalize text-[#121212] opacity-70 ">
-              {/* {data.TipoUsuario}: */}
+              {data.TipoUsuario}:
             </h3>
             <p className="text-[#121212] opacity-50 font-normal text-left ">
               {data.Mensagem}

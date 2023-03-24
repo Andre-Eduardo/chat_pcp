@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: '',
+  baseURL: 'https://apiportaldecompras.dubbox.com.br',
 
   headers: {
     'Content-Type': 'application/json',
