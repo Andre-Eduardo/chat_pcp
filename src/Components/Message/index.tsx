@@ -30,17 +30,39 @@ export default function Message(data: propsMessageData) {
         </div>
       ) : ( */}
       <div ref={data.reference} className="container w-full flex  mt-2">
-        <div className={` max-w-[95%] px-4 pt-4 pb-2  rounded-r-3xl rounded-b-3xl ml-3 flex  items-center ${data.TipoUsuario ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'}`}   >
+        <div
+          className={` max-w-[95%] px-4 pt-4 pb-2  rounded-r-3xl rounded-b-3xl ml-3 flex  items-center ${
+            data.TipoUsuario ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'
+          }`}
+        >
           <div className=" mr-5 ">
-           <div className='flex ' >
-            <p className="capitalize text-[#000]  ">
-              {`${data.TipoUsuario}` || "fornecedor"}: &nbsp;
-            </p>
-            <p className="text-[#121212] opacity-50 font-normal text-left ">
-             {data.Mensagem}
-            </p>
+            <div className="flex ">
+              <p
+                className={`
+                capitalize 
+                ${
+                  data.TipoUsuario
+                    ? 'text-[#121212] opacity-80'
+                    : 'text-[#fff] '
+                }`}
+              >
+                {`${data.TipoUsuario}` || 'fornecedor'}: &nbsp;
+              </p>
+              <p
+                className={`font-normal text-left  ${
+                  data.TipoUsuario
+                    ? 'text-[#121212] opacity-50'
+                    : 'text-[#fff] opacity-70'
+                }`}
+              >
+                {data.Mensagem}
+              </p>
             </div>
-            <h4 className="text-[#121212] pt-2 opacity-50 text-sm text-left">
+            <h4
+              className={` ${
+                data.TipoUsuario ? 'text-[#121212] opacity-50' : 'text-[#fff]'
+              } pt-2 opacity-50 text-sm text-left`}
+            >
               {data.Criado.toString()}
             </h4>
           </div>

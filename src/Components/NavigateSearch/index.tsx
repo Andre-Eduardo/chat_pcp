@@ -19,7 +19,6 @@ export function NavigateSearch(data: NavigateSearchProps) {
   // Hook useEffect for AddPosition
   useEffect(() => {
     if (data.positionMessages && addPositionTriggered) {
-      console.log('Adding position')
       data.ClearSearchMessage(
         data.positionMessages[index - 1],
         data.messageRefs,
