@@ -4,6 +4,7 @@ import ReactLoading from 'react-loading'
 import * as jose from 'jose'
 import api from './services/api'
 import { Alert } from 'react-bootstrap'
+import axios from 'axios'
 function App() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({})
@@ -23,16 +24,18 @@ function App() {
       Authorization: `Bearer ${tokenUrl}`,
     }
     try {
-      let rest = await api.post(
-        '/api/conversa',
+      let rest = await axios.post(
+        'https://apiportaldecompras.dubbox.com.br/api/conversa',
         {},
         {
           headers: headers,
         },
       )
+      console.log(rest)
       setData(rest.data)
     } catch (error: any) {
-      if (error.response.status) {
+      console.log('error', error)
+      if (error.response.status === '409') {
         const code = error.response.data.ErrorMessages[4].split(' ')[6]
 
         GetFindChat(tokenUrl, code)
@@ -47,6 +50,7 @@ function App() {
       const decoded: any = decodeJWT(tokenUrl)
       setTokenDecode(decoded)
       GetCreateChat(tokenUrl)
+      // GetFindChat(tokenUrl, '1da4b2ca-f5d5-490f-73a1-08db2f0bbc49')
       setLoading(false)
     } else {
       window.alert(

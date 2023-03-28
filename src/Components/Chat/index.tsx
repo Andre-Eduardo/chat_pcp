@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import 'react-chat-elements/dist/main.css'
 import './styles.css'
 import { Avatar } from 'react-chat-elements'
-
+// import useWebSocket from 'react-use-websocket'
 import Message from '../Message'
 import { Input } from '../Input'
 import { Search } from '../Search'
@@ -37,22 +37,35 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const messageRefs = useRef<any>([])
   const [numProcesso, setNumProcesso] = useState('')
   const [NameChat, setNameChat] = useState('')
+  const [messages, setMessages] = useState<any>([])
   // envio de mensagem para api
-  async function PostMessage(message: string) {
-    const data = {
-      CodigoConversa: response.Codigo,
-      Mensagem: message,
-    }
-    let rest = await api.post(`/api/mensagem`, data, {
-      headers: {
-        Authorization: `Bearer ${tokenJWT}`,
-      },
-    })
-  }
+
+  // const { sendMessage, lastMessage } = useWebSocket(
+  //   `wss:apiportaldecompras.dubbox.com.br/?CodigoUsuario=${tokenDecode.codigo_usuario}`,
+  //   {
+  //     onOpen: () => console.log(`Connected to App WS`),
+  //     onMessage: (event) => {
+  //       if (lastMessage) {
+  //         console.log(lastMessage)
+  //         if (response?.Codigo) {
+  //           UpdateMessageWS()
+  //           reproduzirSom()
+  //         }
+  //       }
+  //     },
+  //     // queryParams: { token: '123456' },
+  //     onError: (event) => {
+  //       console.error(event)
+  //     },
+  //     shouldReconnect: (closeEvent) => true,
+  //     reconnectInterval: 1000,
+  //   },
+  // )
 
   useEffect(() => {
-    setMessageList(response.Mensagens)
-    if (messageList !== null) {
+    console.log(tokenDecode)
+
+    if (response.Mensagens) {
       setMessageList(response.Mensagens)
     } else {
       setMessageList([])
@@ -98,14 +111,13 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }, [response])
 
-  useEffect(() => {
-    setMessageList(response.Mensagens)
-    if (messageList !== null) {
-      setMessageList(response.Mensagens)
-    } else {
-      setMessageList([])
-    }
-  }, [response.Mensagens])
+  // useEffect(() => {
+  //   if (response.Mensagens) {
+  //     setMessageList(response.Mensagens)
+  //   } else {
+  //     setMessageList([])
+  //   }
+  // }, [response.Mensagens])
 
   useEffect(() => {
     if (openSearch === false) {
@@ -117,9 +129,24 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     const som = new Audio(notificacaoSound)
     som.play()
   }
+
+  // envio de mensagem para api
+  async function PostMessage(message: string) {
+    const data = {
+      CodigoConversa: response.Codigo,
+      Mensagem: message,
+    }
+    let rest = await api.post(`/api/mensagem`, data, {
+      headers: {
+        Authorization: `Bearer ${tokenJWT}`,
+      },
+    })
+    console.log(rest)
+  }
+
   function SubmitMessage(event: Event) {
     event.preventDefault()
-    reproduzirSom()
+
     if (messageText) {
       if (messageList !== null) {
         setMessageList([
@@ -142,6 +169,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         ])
       }
       setMessageText('')
+      PostMessage(messageText)
       // navega para ultima mensagem enviada
       const messageListDiv = messageListRef.current
       const scrollHeight = messageListDiv.scrollHeight
@@ -149,7 +177,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       const maxScrollTop = scrollHeight - height
       messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
-    // PostMessage(messageText)
   }
   // navega para a mensagem que estar sendo buscada
   async function NavigateToMessage() {
@@ -174,27 +201,27 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }
 
-  // async function Loop() {
-  //   let rest = await api.get(
-  //     `/api/mensagem?codigoConversa=${response.Codigo}`,
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${tokenJWT}`,
-  //       },
-  //     },
-  //   )
+  async function UpdateMessageWS() {
+    let rest = await api.get(
+      `/api/mensagem?codigoConversa=${response.Codigo}`,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenJWT}`,
+        },
+      },
+    )
 
-  //   await rest.data.map(async (item: any, index: any) => {
-  //     await response.Usuarios.map((data: any) => {
-  //       if (data.CodigoUsuario == item.CodigoUsuario) {
-  //         rest.data[index].TipoUsuario =
-  //           data.TipoUsuario === 'comprador' ? 'Sistema' : 'Fornecedor'
-  //       }
-  //     })
-  //   })
+    await rest.data.map(async (item: any, index: any) => {
+      await response.Usuarios.map((data: any) => {
+        if (data.CodigoUsuario == item.CodigoUsuario) {
+          rest.data[index].TipoUsuario =
+            data.TipoUsuario === 'comprador' ? 'Sistema' : 'Fornecedor'
+        }
+      })
+    })
 
-  //   setMessageList(rest.data)
-  // }
+    setMessageList(rest.data)
+  }
 
   // useEffect(() => {
   //   setInterval(() => {
