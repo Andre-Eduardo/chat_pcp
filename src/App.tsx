@@ -24,14 +24,14 @@ function App() {
       Authorization: `Bearer ${tokenUrl}`,
     }
     try {
-      let rest = await axios.post(
-        'https://apiportaldecompras.dubbox.com.br/api/conversa',
+      let rest = await api.post(
+        '/api/conversa',
         {},
         {
           headers: headers,
         },
       )
-      console.log(rest)
+
       setData(rest.data)
     } catch (error: any) {
       console.log('error', error)

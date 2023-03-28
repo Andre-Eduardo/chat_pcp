@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://apiportaldecompras.dubbox.com.br',
+  baseURL: process.env.REACT_APP_BASEURL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
-// headers: {
-//   'Content-Type': 'application/json',
-//   // 'Authorization': 'Bearer ' + localStorage.getItem('access_token')
-// },
 
 export default api
