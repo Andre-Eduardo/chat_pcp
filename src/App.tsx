@@ -24,23 +24,23 @@ function App() {
       Authorization: `Bearer ${tokenUrl}`,
     }
     try {
-      let rest = await api.post(
-        '/api/conversa',
-        {},
-        {
-          headers: headers,
-        },
-      )
-
-      setData(rest.data)
+      let rest = await api
+        .post(
+          '/api/conversa',
+          {},
+          {
+            headers: headers,
+          },
+        )
+        .then((response) => setData(response.data))
     } catch (error: any) {
-      console.log('error', error)
-      if (error.response.status === '409') {
+      if (error.response.status === 409) {
         const code = error.response.data.ErrorMessages[4].split(' ')[6]
 
         GetFindChat(tokenUrl, code)
       }
     }
+    return true
   }
   useEffect(() => {
     const tokenUrl = new URLSearchParams(window.location.search).get('token')
@@ -49,9 +49,8 @@ function App() {
       setToken(tokenUrl)
       const decoded: any = decodeJWT(tokenUrl)
       setTokenDecode(decoded)
-      GetCreateChat(tokenUrl)
+      GetCreateChat(tokenUrl).then(() => setLoading(false))
       // GetFindChat(tokenUrl, '1da4b2ca-f5d5-490f-73a1-08db2f0bbc49')
-      setLoading(false)
     } else {
       window.alert(
         'A página atual não conseguiu carregar os dados do chat;\n\n Erro: Token ausente ',
@@ -60,17 +59,18 @@ function App() {
   }, [])
 
   async function GetFindChat(tokenUrl: string, code: string) {
-    let rest = await api.get(`/api/conversa/buscar?codigo=${code}`, {
-      headers: {
-        Authorization: `Bearer ${tokenUrl}`,
-      },
-    })
-    setData(rest.data)
+    let rest = await api
+      .get(`/api/conversa/buscar?codigo=${code}`, {
+        headers: {
+          Authorization: `Bearer ${tokenUrl}`,
+        },
+      })
+      .then((response) => setData(response.data))
   }
 
   return (
     <>
-      {loading ? (
+      {loading && data ? (
         <>
           <ReactLoading
             className="mx-auto mt-[40vh]"

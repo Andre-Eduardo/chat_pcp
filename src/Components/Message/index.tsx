@@ -1,4 +1,5 @@
 import React from 'react'
+import { DateFormatted } from '../../Functions/DateFormatted'
 interface propsMessageData {
   Mensagem: string
   Criado: string
@@ -32,7 +33,7 @@ export default function Message(data: propsMessageData) {
       <div ref={data.reference} className="container w-full flex  mt-2">
         <div
           className={` max-w-[95%] px-4 pt-4 pb-2  rounded-r-3xl rounded-b-3xl ml-3 flex  items-center ${
-            data.TipoUsuario ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'
+            data.TipoUsuario === 'sistema' ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'
           }`}
         >
           <div className=" mr-5 ">
@@ -41,7 +42,7 @@ export default function Message(data: propsMessageData) {
                 className={`
                 capitalize 
                 ${
-                  data.TipoUsuario
+                  data.TipoUsuario === 'sistema'
                     ? 'text-[#121212] opacity-80'
                     : 'text-[#fff] '
                 }`}
@@ -50,7 +51,7 @@ export default function Message(data: propsMessageData) {
               </p>
               <p
                 className={`font-normal text-left  ${
-                  data.TipoUsuario
+                  data.TipoUsuario === 'sistema'
                     ? 'text-[#121212] opacity-50'
                     : 'text-[#fff] opacity-70'
                 }`}
@@ -60,10 +61,13 @@ export default function Message(data: propsMessageData) {
             </div>
             <h4
               className={` ${
-                data.TipoUsuario ? 'text-[#121212] opacity-50' : 'text-[#fff]'
+                data.TipoUsuario === 'sistema'
+                  ? 'text-[#121212] opacity-50'
+                  : 'text-[#fff]'
               } pt-2 opacity-50 text-sm text-left`}
             >
-              {data.Criado.toString()}
+              {/* {data.Criado.split('+')[0]} */}
+              {data.Criado}
             </h4>
           </div>
         </div>

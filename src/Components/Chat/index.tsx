@@ -14,6 +14,7 @@ import { ClearSearchMessage } from '../../Functions/ClearSearchMessage'
 import { DateFormatted } from '../../Functions/DateFormatted'
 import api from '../../services/api'
 import notificacaoSound from '../../assets/songs/notification.mp3'
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 interface MessageProps {
   CodigoConversa: string
   CodigoUsuario: string
@@ -40,31 +41,28 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [messages, setMessages] = useState<any>([])
   // envio de mensagem para api
 
-  // const { sendMessage, lastMessage } = useWebSocket(
-  //   `wss:apiportaldecompras.dubbox.com.br/?CodigoUsuario=${tokenDecode.codigo_usuario}`,
-  //   {
-  //     onOpen: () => console.log(`Connected to App WS`),
-  //     onMessage: (event) => {
-  //       if (lastMessage) {
-  //         console.log(lastMessage)
-  //         if (response?.Codigo) {
-  //           UpdateMessageWS()
-  //           reproduzirSom()
-  //         }
-  //       }
-  //     },
-  //     // queryParams: { token: '123456' },
-  //     onError: (event) => {
-  //       console.error(event)
-  //     },
-  //     shouldReconnect: (closeEvent) => true,
-  //     reconnectInterval: 1000,
-  //   },
-  // )
+  const { sendMessage, lastMessage } = useWebSocket(
+    `wss:apiportaldecompras.dubbox.com.br/?CodigoUsuario=${tokenDecode.codigo_usuario}`,
+    {
+      onOpen: () => console.log(`Connected to App WS`),
+      onMessage: (event) => {
+        if (lastMessage) {
+          if (response?.Codigo) {
+            UpdateMessageWS()
+            reproduzirSom()
+          }
+        }
+      },
+      // queryParams: { token: '123456' },
+      onError: (event) => {
+        console.error(event)
+      },
+      shouldReconnect: (closeEvent) => true,
+      reconnectInterval: 1000,
+    },
+  )
 
   useEffect(() => {
-    console.log(tokenDecode)
-
     if (response.Mensagens) {
       setMessageList(response.Mensagens)
     } else {
@@ -90,7 +88,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   }, [tokenDecode])
 
   useEffect(() => {
-    if (tokenDecode && response.length > 0) {
+    if (response?.Usuarios?.length > 0) {
       var listaMensagem = response.Mensagens
 
       response.Usuarios.map((user: any) => {
@@ -111,13 +109,13 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }, [response])
 
-  // useEffect(() => {
-  //   if (response.Mensagens) {
-  //     setMessageList(response.Mensagens)
-  //   } else {
-  //     setMessageList([])
-  //   }
-  // }, [response.Mensagens])
+  useEffect(() => {
+    if (response.Mensagens) {
+      setMessageList(response.Mensagens)
+    } else {
+      setMessageList([])
+    }
+  }, [response.Mensagens])
 
   useEffect(() => {
     if (openSearch === false) {
@@ -141,7 +139,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         Authorization: `Bearer ${tokenJWT}`,
       },
     })
-    console.log(rest)
   }
 
   function SubmitMessage(event: Event) {
@@ -163,7 +160,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
             CodigoUsuario: '400',
             TipoUsuario:
               tokenDecode.role[0] === 'comprador'
-                ? 'Sistema'
+                ? 'sistema'
                 : tokenDecode.nome_fornecedor,
           },
         ])
@@ -215,21 +212,20 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       await response.Usuarios.map((data: any) => {
         if (data.CodigoUsuario == item.CodigoUsuario) {
           rest.data[index].TipoUsuario =
-            data.TipoUsuario === 'comprador' ? 'Sistema' : 'Fornecedor'
+            data.TipoUsuario === 'comprador'
+              ? 'sistema'
+              : tokenDecode.nome_fornecedor
         }
       })
     })
 
     setMessageList(rest.data)
+    const messageListDiv = messageListRef.current
+    const scrollHeight = messageListDiv.scrollHeight
+    const height = messageListDiv.clientHeight
+    const maxScrollTop = scrollHeight - height
+    messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
   }
-
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     if (response?.Codigo) {
-  //       Loop()
-  //     }
-  //   }, 5000)
-  // }, [response])
 
   return (
     <div className=" h-[100vh] bg-[#F2F2F2] ">
