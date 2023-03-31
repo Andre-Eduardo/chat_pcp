@@ -5,8 +5,7 @@ interface propsMessageData {
   Criado: string
   position: string
   reference: any
-  // CodigoUsuario: string
-  CodigoConversa: string
+  role: string | undefined
   TipoUsuario: string | undefined
 }
 
@@ -33,25 +32,25 @@ export default function Message(data: propsMessageData) {
       <div ref={data.reference} className="container w-full flex  mt-2">
         <div
           className={` max-w-[95%] px-4 pt-4 pb-2  rounded-r-3xl rounded-b-3xl ml-3 flex  items-center ${
-            data.TipoUsuario === 'sistema' ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'
+            data.role === 'comprador' ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'
           }`}
         >
           <div className=" mr-5 ">
-            <div className="flex ">
+            <div className="flex flex-col">
               <p
                 className={`
-                capitalize 
+                capitalize  mr-1
                 ${
-                  data.TipoUsuario === 'sistema'
+                  data.role === 'comprador'
                     ? 'text-[#121212] opacity-80'
                     : 'text-[#fff] '
                 }`}
               >
-                {`${data.TipoUsuario}` || 'fornecedor'}: &nbsp;
+                {`${data.TipoUsuario}` || 'fornecedor'}:
               </p>
               <p
                 className={`font-normal text-left  ${
-                  data.TipoUsuario === 'sistema'
+                  data.role === 'comprador'
                     ? 'text-[#121212] opacity-50'
                     : 'text-[#fff] opacity-70'
                 }`}
@@ -61,7 +60,7 @@ export default function Message(data: propsMessageData) {
             </div>
             <h4
               className={` ${
-                data.TipoUsuario === 'sistema'
+                data.role === 'comprador'
                   ? 'text-[#121212] opacity-50'
                   : 'text-[#fff]'
               } pt-2 opacity-50 text-sm text-left`}

@@ -19,26 +19,42 @@ function App() {
       return null
     }
   }
-  async function GetCreateChat(tokenUrl: string) {
+  // async function GetCreateChat(tokenUrl: string) {
+  //   const headers = {
+  //     Authorization: `Bearer ${tokenUrl}`,
+  //   }
+  //   try {
+  //     let rest = await api
+  //       .post(
+  //         '/api/conversa',
+  //         {},
+  //         {
+  //           headers: headers,
+  //         },
+  //       )
+  //       .then((response) => setData(response.data))
+  //   } catch (error: any) {
+  //     if (error.response.status === 409) {
+  //       const code = error.response.data.ErrorMessages[4].split(' ')[6]
+
+  //       GetFindChat(tokenUrl, code)
+  //     }
+  //   }
+  //   return true
+  // }
+
+  async function GetMessage(tokenUrl: string) {
     const headers = {
       Authorization: `Bearer ${tokenUrl}`,
     }
     try {
       let rest = await api
-        .post(
-          '/api/conversa',
-          {},
-          {
-            headers: headers,
-          },
-        )
+        .get('/api/mensagem', {
+          headers: headers,
+        })
         .then((response) => setData(response.data))
     } catch (error: any) {
-      if (error.response.status === 409) {
-        const code = error.response.data.ErrorMessages[4].split(' ')[6]
-
-        GetFindChat(tokenUrl, code)
-      }
+      window.alert(error)
     }
     return true
   }
@@ -49,7 +65,8 @@ function App() {
       setToken(tokenUrl)
       const decoded: any = decodeJWT(tokenUrl)
       setTokenDecode(decoded)
-      GetCreateChat(tokenUrl).then(() => setLoading(false))
+      console.log(decoded)
+      GetMessage(tokenUrl).then(() => setLoading(false))
       // GetFindChat(tokenUrl, '1da4b2ca-f5d5-490f-73a1-08db2f0bbc49')
     } else {
       window.alert(
@@ -58,15 +75,15 @@ function App() {
     }
   }, [])
 
-  async function GetFindChat(tokenUrl: string, code: string) {
-    let rest = await api
-      .get(`/api/conversa/buscar?codigo=${code}`, {
-        headers: {
-          Authorization: `Bearer ${tokenUrl}`,
-        },
-      })
-      .then((response) => setData(response.data))
-  }
+  // async function GetFindChat(tokenUrl: string, code: string) {
+  //   let rest = await api
+  //     .get(`/api/conversa/buscar?codigo=${code}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${tokenUrl}`,
+  //       },
+  //     })
+  //     .then((response) => setData(response.data))
+  // }
 
   return (
     <>

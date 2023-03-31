@@ -16,15 +16,15 @@ import api from '../../services/api'
 import notificacaoSound from '../../assets/songs/notification.mp3'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 interface MessageProps {
-  CodigoConversa: string
-  CodigoUsuario: string
+  CodigoConversa?: string
+  CodigoUsuario?: string
   Mensagem: string
-  Visualizada: string
-  CodigoItemProcesso: string
+  CodigoItemProcesso?: string
   Criado: string
-  Editado: string
-  Conversa: 'string'
+  CodigoProcesso?: string
+  CodigoParticipante?: string
   TipoUsuario?: string
+  role?: string
 }
 
 export default function Chat({ response, tokenJWT, tokenDecode }: any) {
@@ -36,18 +36,17 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [indexOfMessageSearch, setIndexOfMessageSearch] = useState<number[]>([])
   const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
-  const [numProcesso, setNumProcesso] = useState('')
   const [NameChat, setNameChat] = useState('')
   const [messages, setMessages] = useState<any>([])
   // envio de mensagem para api
 
   const { sendMessage, lastMessage } = useWebSocket(
-    `wss:apiportaldecompras.dubbox.com.br/?CodigoUsuario=${tokenDecode.codigo_usuario}`,
+    `wss:apiportaldecompras.dubbox.com.br/?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.chat_codigo_processo}`,
     {
       onOpen: () => console.log(`Connected to App WS`),
       onMessage: (event) => {
         if (lastMessage) {
-          if (response?.Codigo) {
+          if (response?.Pagina) {
             UpdateMessageWS()
             reproduzirSom()
           }
@@ -62,15 +61,15 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     },
   )
 
-  useEffect(() => {
-    if (response.Mensagens) {
-      setMessageList(response.Mensagens)
-    } else {
-      setMessageList([])
-    }
+  // useEffect(() => {
+  //   if (response.Pagina.Mensagens) {
+  //     let msn = response.Pagina.Mensagens
 
-    setNumProcesso(response.CodigoProcesso)
-  }, [])
+  //     setMessageList(msn)
+  //   } else {
+  //     setMessageList([])
+  //   }
+  // }, [])
 
   useEffect(() => {
     if (tokenDecode.role) {
@@ -79,43 +78,61 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
       const nome = tokenDecode.role.find((e: any) => {
         if (e === 'comprador') {
-          setNameChat(nomeFornecedor)
-        } else if (e === 'fornecedor') {
           setNameChat(nomeComprador)
+        } else if (e === 'fornecedor') {
+          setNameChat(nomeFornecedor)
         }
       })
     }
   }, [tokenDecode])
-
-  useEffect(() => {
-    if (response?.Usuarios?.length > 0) {
-      var listaMensagem = response.Mensagens
-
-      response.Usuarios.map((user: any) => {
-        if (user.TipoUsuario === 'fornecedor') {
-          listaMensagem?.map((mensagem: any) => {
-            if (mensagem.CodigoUsuario === user.CodigoUsuario) {
-              mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-            }
-          })
-        } else if (user.TipoUsuario === 'comprador') {
-          listaMensagem?.map((mensagem: any) => {
-            if (mensagem.CodigoUsuario === user.CodigoUsuario) {
-              mensagem.TipoUsuario = 'sistema'
-            }
-          })
+  async function UpdateTypeMessage() {
+    if (messageList) {
+      console.log(messageList)
+      var listaMensagem = messageList
+      listaMensagem?.map((mensagem: any) => {
+        if (
+          mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
+          tokenDecode.role[0] === 'comprador'
+        ) {
+          mensagem.TipoUsuario = tokenDecode.nome_comprador
+          mensagem.role = 'comprador'
+        } else if (
+          mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
+          tokenDecode.role[0] === 'fornecedor'
+        ) {
+          mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+          mensagem.role = 'fornecedor'
+        } else if (
+          mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
+          tokenDecode.role[0] === 'comprador'
+        ) {
+          mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+          mensagem.role = 'comprador'
+        } else {
+          mensagem.TipoUsuario = tokenDecode.nome_comprador
+          mensagem.role = 'fornecedor'
         }
       })
+      setMessageList(listaMensagem)
     }
-  }, [response])
+  }
+  useEffect(() => {
+    UpdateTypeMessage()
+  }, [messageList])
 
   useEffect(() => {
-    if (response.Mensagens) {
-      setMessageList(response.Mensagens)
+    if (response.Pagina.Mensagens) {
+      // let msn = response.Pagina.Mensagens
+      // msn.sort(
+      //   (a: any, b: any) =>
+      //     new Date(b.data).valueOf() - new Date(a.data).valueOf(),
+      // )
+
+      setMessageList(response.Pagina.Mensagens)
     } else {
       setMessageList([])
     }
-  }, [response.Mensagens])
+  }, [response.Pagina.Mensagens])
 
   useEffect(() => {
     if (openSearch === false) {
@@ -131,14 +148,17 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   // envio de mensagem para api
   async function PostMessage(message: string) {
     const data = {
-      CodigoConversa: response.Codigo,
       Mensagem: message,
     }
-    let rest = await api.post(`/api/mensagem`, data, {
-      headers: {
-        Authorization: `Bearer ${tokenJWT}`,
-      },
-    })
+    try {
+      let rest = await api.post(`/api/mensagem`, data, {
+        headers: {
+          Authorization: `Bearer ${tokenJWT}`,
+        },
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   function SubmitMessage(event: Event) {
@@ -147,32 +167,29 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     if (messageText) {
       if (messageList !== null) {
         setMessageList([
-          ...messageList,
           {
-            CodigoConversa: response.Codigo,
-            // CodigoUsuario: '9f1017f3-9045-41d5-80b6-b87e7a5f8808',
             CodigoItemProcesso: '1231231',
             Mensagem: messageText,
-            Visualizada: '2023-03-22 00:00:00.000',
             Criado: DateFormatted(),
-            Editado: '2023-03-22 00:00:00.000',
-            Conversa: 'string',
-            CodigoUsuario: '400',
+            CodigoUsuario: tokenDecode.codigo_usuario,
+            role: tokenDecode.role[0],
             TipoUsuario:
               tokenDecode.role[0] === 'comprador'
-                ? 'sistema'
+                ? tokenDecode.nome_comprador
                 : tokenDecode.nome_fornecedor,
           },
+          ...messageList,
         ])
       }
       setMessageText('')
       PostMessage(messageText)
+      // messageListRef.current.scrollIntoView({ behavior: 'smooth' })
       // navega para ultima mensagem enviada
-      const messageListDiv = messageListRef.current
-      const scrollHeight = messageListDiv.scrollHeight
-      const height = messageListDiv.clientHeight
-      const maxScrollTop = scrollHeight - height
-      messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
+      // const messageListDiv = messageListRef.current
+      // const scrollHeight = messageListDiv.scrollHeight
+      // const height = messageListDiv.clientHeight
+      // const maxScrollTop = scrollHeight + height
+      // messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
   }
   // navega para a mensagem que estar sendo buscada
@@ -199,32 +216,14 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   }
 
   async function UpdateMessageWS() {
-    let rest = await api.get(
-      `/api/mensagem?codigoConversa=${response.Codigo}`,
-      {
-        headers: {
-          Authorization: `Bearer ${tokenJWT}`,
-        },
+    let rest = await api.get(`/api/mensagem`, {
+      headers: {
+        Authorization: `Bearer ${tokenJWT}`,
       },
-    )
-
-    await rest.data.map(async (item: any, index: any) => {
-      await response.Usuarios.map((data: any) => {
-        if (data.CodigoUsuario == item.CodigoUsuario) {
-          rest.data[index].TipoUsuario =
-            data.TipoUsuario === 'comprador'
-              ? 'sistema'
-              : tokenDecode.nome_fornecedor
-        }
-      })
     })
 
-    setMessageList(rest.data)
-    const messageListDiv = messageListRef.current
-    const scrollHeight = messageListDiv.scrollHeight
-    const height = messageListDiv.clientHeight
-    const maxScrollTop = scrollHeight - height
-    messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
+    setMessageList(rest.data.Pagina.Mensagens)
+    UpdateTypeMessage()
   }
 
   return (
@@ -249,10 +248,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                     {NameChat}
                   </h3>
                   <h4 className="text-[#A8A8A8] text-xs">
-                    Processo: {tokenDecode.processo_numero} | Item:{' '}
-                    {tokenDecode.processo_item_numero} | Valor: R$
-                    {tokenDecode.processo_item_valor} | Descrição:{' '}
-                    {tokenDecode.processo_item_descricao}
+                    Processo: {tokenDecode.chat_codigo_processo} | Item:{' '}
+                    {tokenDecode.chat_codigo_processo_item}
                   </h4>
                 </div>
               </div>
@@ -300,7 +297,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                     Mensagem={item.Mensagem}
                     Criado={item.Criado}
                     // CodigoUsuario={item.CodigoUsuario}
-                    CodigoConversa={item.CodigoConversa}
+                    role={item.role}
                     TipoUsuario={item.TipoUsuario}
                   />
                 ))}
