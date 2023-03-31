@@ -46,10 +46,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       onOpen: () => console.log(`Connected to App WS`),
       onMessage: (event) => {
         if (lastMessage) {
-          if (response?.Pagina) {
-            UpdateMessageWS()
-            reproduzirSom()
-          }
+          console.log('update')
+          UpdateMessageWS()
+          reproduzirSom()
         }
       },
       // queryParams: { token: '123456' },
