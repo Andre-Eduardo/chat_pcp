@@ -87,7 +87,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   }, [tokenDecode])
   async function UpdateTypeMessage() {
     if (messageList) {
-      console.log(messageList)
       var listaMensagem = messageList
       listaMensagem?.map((mensagem: any) => {
         if (
