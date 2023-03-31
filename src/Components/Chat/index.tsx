@@ -97,8 +97,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           mensagem.TipoUsuario = tokenDecode.nome_comprador
           mensagem.role = 'comprador'
         } else if (
-          mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
-          tokenDecode.role[0] === 'fornecedor'
+          mensagem.CodigoUsuario === tokenDecode.codigo_usuario
+          // tokenDecode.role[0] === 'fornecedor'
         ) {
           mensagem.TipoUsuario = tokenDecode.nome_fornecedor
           mensagem.role = 'fornecedor'
@@ -107,10 +107,10 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           tokenDecode.role[0] === 'comprador'
         ) {
           mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-          mensagem.role = 'comprador'
+          mensagem.role = 'fornecedor'
         } else {
           mensagem.TipoUsuario = tokenDecode.nome_comprador
-          mensagem.role = 'fornecedor'
+          mensagem.role = 'comprador'
         }
       })
       setMessageList(listaMensagem)
@@ -299,6 +299,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                     // CodigoUsuario={item.CodigoUsuario}
                     role={item.role}
                     TipoUsuario={item.TipoUsuario}
+                    token={tokenDecode}
                   />
                 ))}
             </div>

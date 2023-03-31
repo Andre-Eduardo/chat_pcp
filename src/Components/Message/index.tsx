@@ -7,6 +7,7 @@ interface propsMessageData {
   reference: any
   role: string | undefined
   TipoUsuario: string | undefined
+  token: any
 }
 
 export default function Message(data: propsMessageData) {
