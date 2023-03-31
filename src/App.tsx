@@ -49,7 +49,7 @@ function App() {
     }
     try {
       let rest = await api
-        .get('/api/mensagem', {
+        .get('/api/mensagem?pagina=1&tamanhoPagina=40', {
           headers: headers,
         })
         .then((response) => setData(response.data))
