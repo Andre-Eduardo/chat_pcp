@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { IoMdSearch } from 'react-icons/io'
 import { FaChevronLeft } from 'react-icons/fa'
 export function Search({
@@ -8,7 +8,7 @@ export function Search({
   setOpenSearch,
   NavigateToMessage,
 }: any) {
-  function handleOpenSearch({}) {
+  function handleOpenSearch() {
     setOpenSearch(!openSearch)
   }
   function SearchText(event: any) {

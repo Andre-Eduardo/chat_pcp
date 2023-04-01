@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
 
 interface NavigateSearchProps {
@@ -34,6 +34,7 @@ export function NavigateSearch(data: NavigateSearchProps) {
       data.setCurrentIndexSearch(data.positionMessages[index])
       setAddPositionTriggered(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, data.positionMessages, addPositionTriggered])
 
   function AddPosition() {
@@ -58,6 +59,7 @@ export function NavigateSearch(data: NavigateSearchProps) {
       data.setCurrentIndexSearch(data.positionMessages[index])
       setRemovePositionTriggered(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, data.positionMessages, removePositionTriggered])
 
   function RemovePosition() {

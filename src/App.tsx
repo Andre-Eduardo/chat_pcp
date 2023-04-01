@@ -3,8 +3,7 @@ import Chat from './Components/Chat'
 import ReactLoading from 'react-loading'
 import * as jose from 'jose'
 import api from './services/api'
-import { Alert } from 'react-bootstrap'
-import axios from 'axios'
+
 function App() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({})
@@ -19,36 +18,13 @@ function App() {
       return null
     }
   }
-  // async function GetCreateChat(tokenUrl: string) {
-  //   const headers = {
-  //     Authorization: `Bearer ${tokenUrl}`,
-  //   }
-  //   try {
-  //     let rest = await api
-  //       .post(
-  //         '/api/conversa',
-  //         {},
-  //         {
-  //           headers: headers,
-  //         },
-  //       )
-  //       .then((response) => setData(response.data))
-  //   } catch (error: any) {
-  //     if (error.response.status === 409) {
-  //       const code = error.response.data.ErrorMessages[4].split(' ')[6]
-
-  //       GetFindChat(tokenUrl, code)
-  //     }
-  //   }
-  //   return true
-  // }
 
   async function GetMessage(tokenUrl: string) {
     const headers = {
       Authorization: `Bearer ${tokenUrl}`,
     }
     try {
-      let rest = await api
+      await api
         .get('/api/mensagem?pagina=1&tamanhoPagina=40', {
           headers: headers,
         })
@@ -74,16 +50,6 @@ function App() {
       )
     }
   }, [])
-
-  // async function GetFindChat(tokenUrl: string, code: string) {
-  //   let rest = await api
-  //     .get(`/api/conversa/buscar?codigo=${code}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${tokenUrl}`,
-  //       },
-  //     })
-  //     .then((response) => setData(response.data))
-  // }
 
   return (
     <>

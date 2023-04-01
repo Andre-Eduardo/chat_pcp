@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Logo from '../../assets/logo192.svg'
-import { Dropdown } from 'react-bootstrap'
 import { MdPerson } from 'react-icons/md'
 import { FaClock } from 'react-icons/fa'
 import './navbar.scss'

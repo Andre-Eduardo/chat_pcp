@@ -1,5 +1,5 @@
 import React from 'react'
-import { DateFormatted } from '../../Functions/DateFormatted'
+
 interface propsMessageData {
   Mensagem: string
   Criado: string

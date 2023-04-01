@@ -1,9 +1,10 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect, useRef, useState } from 'react'
-import 'react-chat-elements/dist/main.css'
+
 import './styles.css'
-import { Avatar } from 'react-chat-elements'
-// import useWebSocket from 'react-use-websocket'
+
 import Message from '../Message'
 import { Input } from '../Input'
 import { Search } from '../Search'
@@ -38,11 +39,11 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
   const [NameChat, setNameChat] = useState('')
-  const [messages, setMessages] = useState<any>([])
+
   const [loading, setLoading] = useState(true)
   // envio de mensagem para api
 
-  const { sendMessage, lastMessage } = useWebSocket(
+  const { lastMessage } = useWebSocket(
     `wss:apiportaldecompras.dubbox.com.br/?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.chat_codigo_processo}`,
     {
       onOpen: () => {
@@ -52,7 +53,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
       onMessage: (event) => {
         if (lastMessage) {
-          console.log('update')
           UpdateMessageWS()
           reproduzirSom()
         }
@@ -66,22 +66,12 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     },
   )
 
-  // useEffect(() => {
-  //   if (response.Pagina.Mensagens) {
-  //     let msn = response.Pagina.Mensagens
-
-  //     setMessageList(msn)
-  //   } else {
-  //     setMessageList([])
-  //   }
-  // }, [])
-
   useEffect(() => {
     if (tokenDecode.role) {
       const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
       const nomeFornecedor = tokenDecode.nome_fornecedor || 'Fornecedor'
 
-      const nome = tokenDecode.role.find((e: any) => {
+      tokenDecode.role.find((e: any) => {
         if (e === 'comprador') {
           setNameChat(nomeComprador)
         } else if (e === 'fornecedor') {
@@ -127,12 +117,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
   useEffect(() => {
     if (response.Pagina.Mensagens) {
-      // let msn = response.Pagina.Mensagens
-      // msn.sort(
-      //   (a: any, b: any) =>
-      //     new Date(b.data).valueOf() - new Date(a.data).valueOf(),
-      // )
-
       setMessageList(response.Pagina.Mensagens)
     } else {
       setMessageList([])
@@ -156,7 +140,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       Mensagem: message,
     }
     try {
-      let rest = await api.post(`/api/mensagem`, data, {
+      await api.post(`/api/mensagem`, data, {
         headers: {
           Authorization: `Bearer ${tokenJWT}`,
         },
@@ -188,13 +172,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       }
       setMessageText('')
       PostMessage(messageText)
-      // messageListRef.current.scrollIntoView({ behavior: 'smooth' })
-      // navega para ultima mensagem enviada
-      // const messageListDiv = messageListRef.current
-      // const scrollHeight = messageListDiv.scrollHeight
-      // const height = messageListDiv.clientHeight
-      // const maxScrollTop = scrollHeight + height
-      // messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
   }
   // navega para a mensagem que estar sendo buscada
@@ -202,7 +179,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     ClearSearchMessage(currentIndexSearch, messageRefs, textInputSearch)
     var posit: number[] = []
     if (messageList !== null) {
-      const filteredArray = messageList.filter((obj: any, index: any) => {
+      messageList.filter((obj: any, index: any) => {
         const lowercaseText = obj.text.toLowerCase()
         const lowercaseSearchText = textInputSearch.toLowerCase()
         if (lowercaseText.indexOf(lowercaseSearchText) !== -1) {
@@ -249,13 +226,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
               <section className=" px-3 md:px-9 h-[4.6rem] bg-white w-full flex flex-row justify-between items-center ">
                 {!openSearch && (
                   <div className="flex flex-row">
-                    <div className="relative">
-                      <Avatar
-                        src="https://avatars.githubusercontent.com/u/80540635?v=4"
-                        alt="avatar"
-                        size="xlarge"
-                        type="rounded"
-                      />
+                    <div className="relative w-12 h-12 bg-slate-500 rounded-full">
                       <div className="absolute w-3 h-3 bg-[#47DC44] rounded-full top-9 right-1"></div>
                     </div>
                     <div className="ml-3">
@@ -295,12 +266,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                 ref={messageListRef}
                 className="h-[100vh] w-full overflow-y-scroll mb-16 "
               >
-                {/* <div className=" relative flex justify-center items-center h-2 mt-4  ">
-          <a className="h-[1px] bg-[#707070] w-full opacity-30 "></a>
-          <div className="absolute bg-[#E4E4E4] px-4">
-            <h3 className=" text-[#121212] opacity-50 ">Hoje</h3>
-          </div>
-        </div> */}
                 <div className=" z-10 w-full mb-20 md:px-6   ">
                   {messageList !== null &&
                     messageList?.length > 0 &&
@@ -313,7 +278,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                         position="left"
                         Mensagem={item.Mensagem}
                         Criado={item.Criado}
-                        // CodigoUsuario={item.CodigoUsuario}
                         role={item.role}
                         TipoUsuario={item.TipoUsuario}
                         token={tokenDecode}
