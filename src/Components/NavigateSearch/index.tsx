@@ -16,7 +16,6 @@ export function NavigateSearch(data: NavigateSearchProps) {
   const [addPositionTriggered, setAddPositionTriggered] = useState(false)
   const [removePositionTriggered, setRemovePositionTriggered] = useState(false)
 
-  // Hook useEffect for AddPosition
   useEffect(() => {
     if (data.positionMessages && addPositionTriggered) {
       data.ClearSearchMessage(

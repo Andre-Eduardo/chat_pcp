@@ -47,10 +47,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [loading, setLoading] = useState(true)
   const [loadingButton, setLoadingButton] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  // envio de mensagem para api
 
   const { lastMessage } = useWebSocket(
-    `wss:apiportaldecompras.dubbox.com.br/?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.chat_codigo_processo}`,
+    `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.chat_codigo_processo}`,
     {
       onOpen: () => {
         console.log(`Connected to App WS`)
@@ -63,7 +62,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           reproduzirSom()
         }
       },
-      // queryParams: { token: '123456' },
+
       onError: (event) => {
         console.error(event)
       },
@@ -96,10 +95,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         ) {
           mensagem.TipoUsuario = tokenDecode.nome_comprador
           mensagem.role = 'comprador'
-        } else if (
-          mensagem.CodigoUsuario === tokenDecode.codigo_usuario
-          // tokenDecode.role[0] === 'fornecedor'
-        ) {
+        } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
           mensagem.TipoUsuario = tokenDecode.nome_fornecedor
           mensagem.role = 'fornecedor'
         } else if (
@@ -199,8 +195,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           return true
         }
       })
-
-      // const positReverse = posit.reverse() // começa pela ultima mensagem
 
       setIndexOfMessageSearch(posit)
       setCurrentIndexSearch(posit[0])

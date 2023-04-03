@@ -50,7 +50,6 @@ function App() {
       setTokenDecode(decoded)
 
       GetMessage(tokenUrl).then(() => setLoading(false))
-      // GetFindChat(tokenUrl, '1da4b2ca-f5d5-490f-73a1-08db2f0bbc49')
     } else {
       MySwal.fire({
         icon: 'error',
