@@ -128,7 +128,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     } else {
       setMessageList([])
     }
-    console.log(meta)
   }, [response.Pagina.Mensagens])
 
   useEffect(() => {
@@ -154,7 +153,11 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         },
       })
     } catch (error) {
-      console.log(error)
+      MySwal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `${error}`,
+      })
     }
   }
 
@@ -188,7 +191,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     var posit: number[] = []
     if (messageList !== null) {
       messageList.filter((obj: any, index: any) => {
-        const lowercaseText = obj.text.toLowerCase()
+        const lowercaseText = obj.Mensagem.toLowerCase()
         const lowercaseSearchText = textInputSearch.toLowerCase()
         if (lowercaseText.indexOf(lowercaseSearchText) !== -1) {
           obj.positionInArray = index
@@ -197,11 +200,11 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         }
       })
 
-      const positReverse = posit.reverse() // começa pela ultima mensagem
+      // const positReverse = posit.reverse() // começa pela ultima mensagem
 
-      setIndexOfMessageSearch(positReverse)
-      setCurrentIndexSearch(positReverse[0])
-      handleScrollToMessage(positReverse[0], messageRefs, textInputSearch)
+      setIndexOfMessageSearch(posit)
+      setCurrentIndexSearch(posit[0])
+      handleScrollToMessage(posit[0], messageRefs, textInputSearch)
     }
   }
 
@@ -223,7 +226,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     setLoadingButton(true)
     var index = currentPage + 1
     setCurrentPage(index)
-    console.log(index)
+
     try {
       await api
         .get(`/api/mensagem?pagina=1&tamanhoPagina=${index * 40}`, {
