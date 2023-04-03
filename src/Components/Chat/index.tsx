@@ -17,6 +17,10 @@ import api from '../../services/api'
 import notificacaoSound from '../../assets/songs/notification.mp3'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 import ReactLoading from 'react-loading'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
 interface MessageProps {
   CodigoConversa?: string
   CodigoUsuario?: string
@@ -39,8 +43,10 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
   const [NameChat, setNameChat] = useState('')
-
+  const [meta, setMeta] = useState<any>([])
   const [loading, setLoading] = useState(true)
+  const [loadingButton, setLoadingButton] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
   // envio de mensagem para api
 
   const { lastMessage } = useWebSocket(
@@ -117,10 +123,12 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
   useEffect(() => {
     if (response.Pagina.Mensagens) {
+      setMeta(response.Meta)
       setMessageList(response.Pagina.Mensagens)
     } else {
       setMessageList([])
     }
+    console.log(meta)
   }, [response.Pagina.Mensagens])
 
   useEffect(() => {
@@ -198,14 +206,43 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   }
 
   async function UpdateMessageWS() {
-    let rest = await api.get(`/api/mensagem?pagina=1&tamanhoPagina=40`, {
-      headers: {
-        Authorization: `Bearer ${tokenJWT}`,
+    let rest = await api.get(
+      `/api/mensagem?pagina=1&tamanhoPagina=${currentPage * 40}`,
+      {
+        headers: {
+          Authorization: `Bearer ${tokenJWT}`,
+        },
       },
-    })
+    )
 
     setMessageList(rest.data.Pagina.Mensagens)
     UpdateTypeMessage(rest.data.Pagina.Mensagens)
+  }
+
+  async function HandleNewMessage() {
+    setLoadingButton(true)
+    var index = currentPage + 1
+    setCurrentPage(index)
+    console.log(index)
+    try {
+      await api
+        .get(`/api/mensagem?pagina=1&tamanhoPagina=${index * 40}`, {
+          headers: {
+            Authorization: `Bearer ${tokenJWT}`,
+          },
+        })
+        .then((rest) => {
+          setMessageList(rest.data.Pagina.Mensagens)
+          UpdateTypeMessage(rest.data.Pagina.Mensagens)
+          setLoadingButton(false)
+        })
+    } catch (error) {
+      MySwal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `${error}`,
+      })
+    }
   }
 
   return (
@@ -284,6 +321,29 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                       />
                     ))}
                 </div>
+
+                {`http://localhost:5000/api/mensagem?pagina=${currentPage}&tamanhoPagina=40` !==
+                  meta.Ultima && (
+                  <div className=" items-center mb-8 justify-center flex">
+                    <button
+                      disabled={loadingButton}
+                      className=" flex items-center justify-center text-white bg-[#4784DE] w-44 h-12 rounded-lg hover:opacity-70"
+                      onClick={() => HandleNewMessage()}
+                    >
+                      {loadingButton ? (
+                        <ReactLoading
+                          className=""
+                          type="spin"
+                          color="#fff"
+                          height={'30px'}
+                          width={'30px'}
+                        />
+                      ) : (
+                        'Carregar mais'
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
               <footer className="fixed   md:px-8 w-full  bottom-0 bg-[#E4E4E4] ">
                 <div className="md:mb-3">

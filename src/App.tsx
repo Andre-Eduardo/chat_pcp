@@ -3,7 +3,10 @@ import Chat from './Components/Chat'
 import ReactLoading from 'react-loading'
 import * as jose from 'jose'
 import api from './services/api'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
+const MySwal = withReactContent(Swal)
 function App() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({})
@@ -30,7 +33,11 @@ function App() {
         })
         .then((response) => setData(response.data))
     } catch (error: any) {
-      window.alert(error)
+      MySwal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `${error}`,
+      })
     }
     return true
   }
@@ -45,9 +52,12 @@ function App() {
       GetMessage(tokenUrl).then(() => setLoading(false))
       // GetFindChat(tokenUrl, '1da4b2ca-f5d5-490f-73a1-08db2f0bbc49')
     } else {
-      window.alert(
-        'A página atual não conseguiu carregar os dados do chat;\n\n Erro: Token ausente ',
-      )
+      MySwal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'A página atual não conseguiu carregar os dados do chat;\n\n ',
+        footer: 'Erro: Token ausente ',
+      })
     }
   }, [])
 
