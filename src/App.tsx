@@ -37,6 +37,9 @@ function App() {
         icon: 'error',
         title: 'Oops...',
         text: `${error}`,
+        backdrop: false,
+        showCancelButton: false,
+        showConfirmButton: false,
       })
     }
     return true
@@ -56,6 +59,9 @@ function App() {
         title: 'Oops...',
         text: 'A página atual não conseguiu carregar os dados do chat;\n\n ',
         footer: 'Erro: Token ausente ',
+        backdrop: false,
+        showCancelButton: false,
+        showConfirmButton: false,
       })
     }
   }, [])

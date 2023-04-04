@@ -117,15 +117,25 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     UpdateTypeMessage(messageList)
   }, [messageList])
 
-  useEffect(() => {
-    if (response.Pagina.Mensagens) {
-      setMeta(response.Meta)
-      setMessageList(response.Pagina.Mensagens)
-    } else {
-      setMessageList([])
-    }
-  }, [response.Pagina.Mensagens])
-
+  try {
+    useEffect(() => {
+      if (response.Pagina.Mensagens) {
+        setMeta(response.Meta)
+        setMessageList(response.Pagina.Mensagens)
+      } else {
+        setMessageList([])
+      }
+    }, [response.Pagina.Mensagens])
+  } catch (error) {
+    MySwal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: `Nao foi possível Carregar dados Verifique a Url`,
+      backdrop: false,
+      showCancelButton: false,
+      showConfirmButton: false,
+    })
+  }
   useEffect(() => {
     if (openSearch === false) {
       ClearSearchMessage(currentIndexSearch, messageRefs, textInputSearch)
@@ -238,6 +248,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         icon: 'error',
         title: 'Oops...',
         text: `${error}`,
+        backdrop: false,
+        showCancelButton: false,
+        showConfirmButton: false,
       })
     }
   }
