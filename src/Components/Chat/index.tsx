@@ -23,12 +23,12 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 interface MessageProps {
   CodigoConversa?: string
-  CodigoUsuario?: string
+  codigo_usuario?: string
   Mensagem: string
-  CodigoItemProcesso?: string
+  codigoProcesso_item?: string
   Criado: string
-  CodigoProcesso?: string
-  CodigoParticipante?: string
+  codigo_processo?: string
+
   TipoUsuario?: string
   role?: string
 }
@@ -49,7 +49,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [currentPage, setCurrentPage] = useState(1)
 
   const { lastMessage } = useWebSocket(
-    `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.chat_codigo_processo}`,
+    `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
     {
       onOpen: () => {
         console.log(`Connected to App WS`)
@@ -76,6 +76,12 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
       const nomeFornecedor = tokenDecode.nome_fornecedor || 'Fornecedor'
 
+      //   if (tokenDecode.role === 'comprador') {
+      //     setNameChat(nomeComprador)
+      //   } else if (tokenDecode.role === 'fornecedor') {
+      //     setNameChat(nomeFornecedor)
+      //   }
+      // }
       tokenDecode.role.find((e: any) => {
         if (e === 'comprador') {
           setNameChat(nomeComprador)
@@ -90,16 +96,16 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       var listaMensagem = msnList
       await listaMensagem?.map((mensagem: any) => {
         if (
-          mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
+          mensagem.codigo_usuario === tokenDecode.codigo_usuario &&
           tokenDecode.role[0] === 'comprador'
         ) {
           mensagem.TipoUsuario = tokenDecode.nome_comprador
           mensagem.role = 'comprador'
-        } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
+        } else if (mensagem.codigo_usuario === tokenDecode.codigo_usuario) {
           mensagem.TipoUsuario = tokenDecode.nome_fornecedor
           mensagem.role = 'fornecedor'
         } else if (
-          mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
+          mensagem.codigo_usuario !== tokenDecode.codigo_usuario &&
           tokenDecode.role[0] === 'comprador'
         ) {
           mensagem.TipoUsuario = tokenDecode.nome_fornecedor
@@ -174,10 +180,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       if (messageList !== null) {
         setMessageList([
           {
-            CodigoItemProcesso: '1231231',
             Mensagem: messageText,
             Criado: DateFormatted(),
-            CodigoUsuario: tokenDecode.codigo_usuario,
+            codigo_usuario: tokenDecode.codigo_usuario,
             role: tokenDecode.role[0],
             TipoUsuario:
               tokenDecode.role[0] === 'comprador'
@@ -281,8 +286,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                         {NameChat}
                       </h3>
                       <h4 className="text-[#A8A8A8] text-xs">
-                        Processo: {tokenDecode.chat_codigo_processo} | Item:{' '}
-                        {tokenDecode.chat_codigo_processo_item}
+                        Processo: {tokenDecode.codigo_processo} | Item:{' '}
+                        {tokenDecode.codigo_item_processo}
                       </h4>
                     </div>
                   </div>

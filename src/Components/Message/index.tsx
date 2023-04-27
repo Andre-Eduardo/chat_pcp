@@ -1,4 +1,6 @@
 import React from 'react'
+import { DateFormatted } from '../../Functions/DateFormatted'
+import { DateApi } from '../../Functions/DateApi'
 
 interface propsMessageData {
   Mensagem: string
@@ -49,7 +51,7 @@ export default function Message(data: propsMessageData) {
                   : 'text-[#fff]'
               } pt-2 opacity-50 text-sm text-left`}
             >
-              {data.Criado}
+              {DateApi(data.Criado)}
             </h4>
           </div>
         </div>
