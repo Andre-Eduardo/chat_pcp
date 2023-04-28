@@ -76,20 +76,20 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
       const nomeFornecedor = tokenDecode.nome_fornecedor || 'Fornecedor'
 
-      //   if (tokenDecode.role === 'comprador') {
-      //     setNameChat(nomeComprador)
-      //   } else if (tokenDecode.role === 'fornecedor') {
-      //     setNameChat(nomeFornecedor)
-      //   }
-      // }
-      tokenDecode.role.find((e: any) => {
-        if (e === 'comprador') {
-          setNameChat(nomeComprador)
-        } else if (e === 'fornecedor') {
-          setNameChat(nomeFornecedor)
-        }
-      })
+      if (tokenDecode.role === 'comprador') {
+        setNameChat(nomeComprador)
+      } else if (tokenDecode.role === 'fornecedor') {
+        setNameChat(nomeFornecedor)
+      }
     }
+    //   tokenDecode.role.find((e: any) => {
+    //     if (e === 'comprador') {
+    //       setNameChat(nomeComprador)
+    //     } else if (e === 'fornecedor') {
+    //       setNameChat(nomeFornecedor)
+    //     }
+    //   })
+    // }
   }, [tokenDecode])
   async function UpdateTypeMessage(msnList?: any) {
     if (msnList) {
@@ -97,7 +97,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       await listaMensagem?.map((mensagem: any) => {
         if (
           mensagem.codigo_usuario === tokenDecode.codigo_usuario &&
-          tokenDecode.role[0] === 'comprador'
+          // tokenDecode.role[0] === 'comprador'
+          tokenDecode.role === 'comprador'
         ) {
           mensagem.TipoUsuario = tokenDecode.nome_comprador
           mensagem.role = 'comprador'
@@ -106,7 +107,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           mensagem.role = 'fornecedor'
         } else if (
           mensagem.codigo_usuario !== tokenDecode.codigo_usuario &&
-          tokenDecode.role[0] === 'comprador'
+          // tokenDecode.role[0] === 'comprador'
+          tokenDecode.role === 'comprador'
         ) {
           mensagem.TipoUsuario = tokenDecode.nome_fornecedor
           mensagem.role = 'fornecedor'
@@ -183,7 +185,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
             Mensagem: messageText,
             Criado: DateFormatted(),
             codigo_usuario: tokenDecode.codigo_usuario,
-            role: tokenDecode.role[0],
+            role: tokenDecode.role,
             TipoUsuario:
               tokenDecode.role[0] === 'comprador'
                 ? tokenDecode.nome_comprador
