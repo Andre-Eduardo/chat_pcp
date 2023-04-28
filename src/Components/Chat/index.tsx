@@ -75,50 +75,74 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     if (tokenDecode.role) {
       const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
       const nomeFornecedor = tokenDecode.nome_fornecedor || 'Fornecedor'
+      if (typeof tokenDecode.role === 'string') {
+        if (tokenDecode.role === 'comprador') {
+          setNameChat(nomeComprador)
+        } else if (tokenDecode.role === 'fornecedor') {
+          setNameChat(nomeFornecedor)
+        }
+      }
 
-      if (tokenDecode.role === 'comprador') {
-        setNameChat(nomeComprador)
-      } else if (tokenDecode.role === 'fornecedor') {
-        setNameChat(nomeFornecedor)
+      if (typeof tokenDecode.role === 'object') {
+        tokenDecode.role.find((e: any) => {
+          if (e === 'comprador') {
+            setNameChat(nomeComprador)
+          } else if (e === 'fornecedor') {
+            setNameChat(nomeFornecedor)
+          }
+        })
       }
     }
-    //   tokenDecode.role.find((e: any) => {
-    //     if (e === 'comprador') {
-    //       setNameChat(nomeComprador)
-    //     } else if (e === 'fornecedor') {
-    //       setNameChat(nomeFornecedor)
-    //     }
-    //   })
-    // }
   }, [tokenDecode])
   async function UpdateTypeMessage(msnList?: any) {
     if (msnList) {
       var listaMensagem = msnList
       await listaMensagem?.map((mensagem: any) => {
-        if (
-          mensagem.codigo_usuario === tokenDecode.codigo_usuario &&
-          // tokenDecode.role[0] === 'comprador'
-          tokenDecode.role === 'comprador'
-        ) {
-          mensagem.TipoUsuario = tokenDecode.nome_comprador
-          mensagem.role = 'comprador'
-        } else if (mensagem.codigo_usuario === tokenDecode.codigo_usuario) {
-          mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-          mensagem.role = 'fornecedor'
-        } else if (
-          mensagem.codigo_usuario !== tokenDecode.codigo_usuario &&
-          // tokenDecode.role[0] === 'comprador'
-          tokenDecode.role === 'comprador'
-        ) {
-          mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-          mensagem.role = 'fornecedor'
+        if (typeof tokenDecode.role === 'object') {
+          if (
+            mensagem.codigo_usuario === tokenDecode.codigo_usuario &&
+            tokenDecode.role[0] === 'comprador'
+          ) {
+            mensagem.TipoUsuario = tokenDecode.nome_comprador
+            mensagem.role = 'comprador'
+          } else if (mensagem.codigo_usuario === tokenDecode.codigo_usuario) {
+            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+            mensagem.role = 'fornecedor'
+          } else if (
+            mensagem.codigo_usuario !== tokenDecode.codigo_usuario &&
+            tokenDecode.role[0] === 'comprador'
+          ) {
+            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+            mensagem.role = 'fornecedor'
+          } else {
+            mensagem.TipoUsuario = tokenDecode.nome_comprador
+            mensagem.role = 'comprador'
+          }
         } else {
-          mensagem.TipoUsuario = tokenDecode.nome_comprador
-          mensagem.role = 'comprador'
+          if (
+            mensagem.codigo_usuario === tokenDecode.codigo_usuario &&
+            tokenDecode.role === 'comprador'
+          ) {
+            mensagem.TipoUsuario = tokenDecode.nome_comprador
+            mensagem.role = 'comprador'
+          } else if (mensagem.codigo_usuario === tokenDecode.codigo_usuario) {
+            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+            mensagem.role = 'fornecedor'
+          } else if (
+            mensagem.codigo_usuario !== tokenDecode.codigo_usuario &&
+            tokenDecode.role === 'comprador'
+          ) {
+            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+            mensagem.role = 'fornecedor'
+          } else {
+            mensagem.TipoUsuario = tokenDecode.nome_comprador
+            mensagem.role = 'comprador'
+          }
         }
       })
       setMessageList(listaMensagem)
     }
+
     return true
   }
   useEffect(() => {
