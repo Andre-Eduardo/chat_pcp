@@ -23,7 +23,7 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 interface MessageProps {
   CodigoConversa?: string
-  codigo_usuario?: string
+  CodigoUsuario?: string
   Mensagem: string
   codigoProcesso_item?: string
   Criado: string
@@ -99,17 +99,18 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       var listaMensagem = msnList
       await listaMensagem?.map((mensagem: any) => {
         if (typeof tokenDecode.role === 'object') {
+          console.log(mensagem.CodigoUsuario, tokenDecode.codigo_usuario)
           if (
-            mensagem.codigo_usuario === tokenDecode.codigo_usuario &&
+            mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
             tokenDecode.role[0] === 'comprador'
           ) {
             mensagem.TipoUsuario = tokenDecode.nome_comprador
             mensagem.role = 'comprador'
-          } else if (mensagem.codigo_usuario === tokenDecode.codigo_usuario) {
+          } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
             mensagem.TipoUsuario = tokenDecode.nome_fornecedor
             mensagem.role = 'fornecedor'
           } else if (
-            mensagem.codigo_usuario !== tokenDecode.codigo_usuario &&
+            mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
             tokenDecode.role[0] === 'comprador'
           ) {
             mensagem.TipoUsuario = tokenDecode.nome_fornecedor
@@ -120,16 +121,16 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           }
         } else {
           if (
-            mensagem.codigo_usuario === tokenDecode.codigo_usuario &&
+            mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
             tokenDecode.role === 'comprador'
           ) {
             mensagem.TipoUsuario = tokenDecode.nome_comprador
             mensagem.role = 'comprador'
-          } else if (mensagem.codigo_usuario === tokenDecode.codigo_usuario) {
+          } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
             mensagem.TipoUsuario = tokenDecode.nome_fornecedor
             mensagem.role = 'fornecedor'
           } else if (
-            mensagem.codigo_usuario !== tokenDecode.codigo_usuario &&
+            mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
             tokenDecode.role === 'comprador'
           ) {
             mensagem.TipoUsuario = tokenDecode.nome_fornecedor
@@ -199,6 +200,22 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }
 
+  function AddTypeUser() {
+    var type
+    if (typeof tokenDecode.role === 'object') {
+      type =
+        tokenDecode.role[0] === 'comprador'
+          ? tokenDecode.nome_comprador
+          : tokenDecode.nome_fornecedor
+    } else {
+      type =
+        tokenDecode.role === 'comprador'
+          ? tokenDecode.nome_comprador
+          : tokenDecode.nome_fornecedor
+    }
+    return type
+  }
+
   function SubmitMessage(event: Event) {
     event.preventDefault()
 
@@ -208,12 +225,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           {
             Mensagem: messageText,
             Criado: DateFormatted(),
-            codigo_usuario: tokenDecode.codigo_usuario,
+            CodigoUsuario: tokenDecode.codigo_usuario,
             role: tokenDecode.role,
-            TipoUsuario:
-              tokenDecode.role[0] === 'comprador'
-                ? tokenDecode.nome_comprador
-                : tokenDecode.nome_fornecedor,
+            TipoUsuario: AddTypeUser(),
           },
           ...messageList,
         ])
