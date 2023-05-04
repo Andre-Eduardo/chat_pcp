@@ -35,20 +35,23 @@ interface MessageProps {
 
 export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [textInputSearch, setTextInputSearch] = useState('')
-  const messageListRef = useRef<any>(null)
+
+  const listaRef = useRef<any>(null)
   const [messageList, setMessageList] = useState<MessageProps[] | null>(null)
   const [messageText, setMessageText] = useState('')
   const [openSearch, setOpenSearch] = useState(false)
   const [indexOfMessageSearch, setIndexOfMessageSearch] = useState<number[]>([])
   const [currentIndexSearch, setCurrentIndexSearch] = useState(-1)
   const messageRefs = useRef<any>([])
+  const messageListRef = useRef<any>(null)
+  const pageRef = useRef<any>(null)
   const [NameChat, setNameChat] = useState('')
   const [meta, setMeta] = useState<any>([])
   const [loading, setLoading] = useState(true)
   const [loadingButton, setLoadingButton] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
 
-  const { lastMessage } = useWebSocket(
+  const { lastMessage, readyState } = useWebSocket(
     `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
     {
       onOpen: () => {
@@ -60,6 +63,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         if (lastMessage) {
           UpdateMessageWS()
           reproduzirSom()
+          console.log(`Message received`)
         }
       },
 
@@ -71,6 +75,20 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     },
   )
 
+  useEffect(() => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTo({
+        top: messageListRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [messageListRef.current, loading])
+
+  useEffect(() => {
+    return () => {
+      listaRef.current = null
+    }
+  }, [])
   useEffect(() => {
     if (tokenDecode.role) {
       const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
@@ -93,13 +111,18 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         })
       }
     }
+    if (listaRef.current) {
+      listaRef?.current.scrollTo({
+        top: listaRef?.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
   }, [tokenDecode])
   async function UpdateTypeMessage(msnList?: any) {
     if (msnList) {
       var listaMensagem = msnList
       await listaMensagem?.map((mensagem: any) => {
         if (typeof tokenDecode.role === 'object') {
-          console.log(mensagem.CodigoUsuario, tokenDecode.codigo_usuario)
           if (
             mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
             tokenDecode.role[0] === 'comprador'
@@ -154,7 +177,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     useEffect(() => {
       if (response.Pagina.Mensagens) {
         setMeta(response.Meta)
-        setMessageList(response.Pagina.Mensagens)
+        setMessageList(response.Pagina.Mensagens.reverse())
       } else {
         setMessageList([])
       }
@@ -222,6 +245,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     if (messageText) {
       if (messageList !== null) {
         setMessageList([
+          ...messageList,
           {
             Mensagem: messageText,
             Criado: DateFormatted(),
@@ -229,11 +253,16 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
             role: tokenDecode.role,
             TipoUsuario: AddTypeUser(),
           },
-          ...messageList,
         ])
       }
       setMessageText('')
       PostMessage(messageText)
+
+      const messageListDiv = messageListRef.current
+      const scrollHeight = messageListDiv.scrollHeight
+      const height = messageListDiv.clientHeight
+      const maxScrollTop = scrollHeight + height
+      messageListDiv.scrollTo({ top: maxScrollTop, behavior: 'smooth' })
     }
   }
   // navega para a mensagem que estar sendo buscada
@@ -259,7 +288,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
   async function UpdateMessageWS() {
     let rest = await api.get(
-      `/api/mensagem?pagina=1&tamanhoPagina=${currentPage * 40}`,
+      `/api/mensagem?pagina=1&tamanhoPagina=${currentPage * 10}&final=false`,
       {
         headers: {
           Authorization: `Bearer ${tokenJWT}`,
@@ -267,8 +296,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       },
     )
 
-    setMessageList(rest.data.Pagina.Mensagens)
-    UpdateTypeMessage(rest.data.Pagina.Mensagens)
+    // setMessageList(rest.data.Pagina.Mensagens.reverse())
+    UpdateTypeMessage(rest.data.Pagina.Mensagens.reverse())
   }
 
   async function HandleNewMessage() {
@@ -278,14 +307,14 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
     try {
       await api
-        .get(`/api/mensagem?pagina=1&tamanhoPagina=${index * 40}`, {
+        .get(`/api/mensagem?pagina=1&tamanhoPagina=${index * 10}&final=false`, {
           headers: {
             Authorization: `Bearer ${tokenJWT}`,
           },
         })
         .then((rest) => {
-          setMessageList(rest.data.Pagina.Mensagens)
-          UpdateTypeMessage(rest.data.Pagina.Mensagens)
+          // setMessageList(rest.data.Pagina.Mensagens)
+          UpdateTypeMessage(rest.data.Pagina.Mensagens.reverse())
           setLoadingButton(false)
         })
     } catch (error) {
@@ -314,7 +343,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         <div className=" h-[100vh] bg-[#F2F2F2] ">
           <div className="  justify-center flex-col  ">
             <Header />
-            <div className="  h-[100vh] mx-auto overscroll-y-contain bg-[#E4E4E4] flex flex-col items-center ">
+            <div className="  h-[90vh] mx-auto overscroll-y-contain bg-[#E4E4E4] flex flex-col items-center ">
               <section className=" px-3 md:px-9 h-[4.6rem] bg-white w-full flex flex-row justify-between items-center ">
                 {!openSearch && (
                   <div className="flex flex-row">
@@ -358,28 +387,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                 ref={messageListRef}
                 className="h-[100vh] w-full overflow-y-scroll mb-16 "
               >
-                <div className=" z-10 w-full mb-20 md:px-6   ">
-                  {messageList !== null &&
-                    messageList?.length > 0 &&
-                    messageList.map((item, index) => (
-                      <Message
-                        reference={(el: any) =>
-                          (messageRefs.current[index] = el)
-                        }
-                        key={index}
-                        position="left"
-                        Mensagem={item.Mensagem}
-                        Criado={item.Criado}
-                        role={item.role}
-                        TipoUsuario={item.TipoUsuario}
-                        token={tokenDecode}
-                      />
-                    ))}
-                </div>
-
-                {`http://localhost:5000/api/mensagem?pagina=${currentPage}&tamanhoPagina=40` !==
+                {`http://localhost:5000/api/mensagem?pagina=${currentPage}&tamanhoPagina=10` !==
                   meta.Ultima && (
-                  <div className=" items-center mb-8 justify-center flex">
+                  <div className=" items-center mt-2 mb-1 justify-center flex">
                     <button
                       disabled={loadingButton}
                       className=" flex items-center justify-center text-white bg-[#4784DE] w-44 h-12 rounded-lg hover:opacity-70"
@@ -399,6 +409,24 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                     </button>
                   </div>
                 )}
+                <div className=" z-10 w-full mb-28 md:px-6  ">
+                  {messageList !== null &&
+                    messageList?.length > 0 &&
+                    messageList.map((item, index) => (
+                      <Message
+                        reference={(el: any) =>
+                          (messageRefs.current[index] = el)
+                        }
+                        key={index}
+                        position="left"
+                        Mensagem={item.Mensagem}
+                        Criado={item.Criado}
+                        role={item.role}
+                        TipoUsuario={item.TipoUsuario}
+                        token={tokenDecode}
+                      />
+                    ))}
+                </div>
               </div>
               <footer className="fixed   md:px-8 w-full  bottom-0 bg-[#E4E4E4] ">
                 <div className="md:mb-3">
