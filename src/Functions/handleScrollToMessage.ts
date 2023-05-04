@@ -5,15 +5,17 @@ export function handleScrollToMessage(
 ) {
   if (messageRefs.current[index]) {
     messageRefs.current[index].scrollIntoView({ behavior: 'smooth' })
-    messageRefs.current[index].style.backgroundColor = 'rgb(75, 132, 222,0.4)'
 
+    messageRefs.current[index].style.backgroundColor = 'rgb(75, 132, 222,0.4)'
     // Cria um novo elemento span com o estilo
     const span = document.createElement('span')
     span.style.backgroundColor = 'yellow'
+    span.style.color = 'black'
     span.innerText = textInputSearch
 
-    // Acessa o elemento que contém o texto usando a referência
-    const texto = messageRefs.current[index].children[0].children[0].children[0]
+    //   // Acessa o elemento que contém o texto usando a referência
+    const texto =
+      messageRefs.current[index].children[0].children[0].children[0].children[1]
 
     // Encontra a posição do trecho  para substituir
     const position = texto.innerText.indexOf(textInputSearch)

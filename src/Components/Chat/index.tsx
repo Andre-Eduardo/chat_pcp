@@ -280,9 +280,12 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         }
       })
 
-      setIndexOfMessageSearch(posit)
-      setCurrentIndexSearch(posit[0])
-      handleScrollToMessage(posit[0], messageRefs, textInputSearch)
+      const positReverse = posit.reverse()
+
+      setIndexOfMessageSearch(positReverse)
+      setCurrentIndexSearch(positReverse[0])
+
+      handleScrollToMessage(positReverse[0], messageRefs, textInputSearch)
     }
   }
 
@@ -409,7 +412,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                     </button>
                   </div>
                 )}
-                <div className=" z-10 w-full mb-28 md:px-6  ">
+                <div className=" z-10 w-full mb-28 md:px-6   ">
                   {messageList !== null &&
                     messageList?.length > 0 &&
                     messageList.map((item, index) => (

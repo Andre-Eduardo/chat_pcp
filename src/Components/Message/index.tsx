@@ -15,7 +15,7 @@ interface propsMessageData {
 export default function Message(data: propsMessageData) {
   return (
     <>
-      <div ref={data.reference} className="container w-full flex  mt-2">
+      <div ref={data.reference} className=" w-full flex  mt-2">
         <div
           className={` max-w-[95%] px-4 pt-4 pb-2  rounded-r-3xl rounded-b-3xl ml-3 flex  items-center ${
             data.role === 'comprador' ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'
