@@ -70,8 +70,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       onError: (event) => {
         console.error(event)
       },
-      shouldReconnect: (closeEvent) => true,
-      reconnectInterval: 1000,
+      shouldReconnect: (closeEvent) => false,
+      // reconnectInterval: 100,
     },
   )
 
