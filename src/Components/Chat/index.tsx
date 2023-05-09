@@ -62,8 +62,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       onMessage: (event) => {
         if (lastMessage) {
           UpdateMessageWS()
-          reproduzirSom()
-          console.log(`Message received`)
+          // reproduzirSom()
         }
       },
 
