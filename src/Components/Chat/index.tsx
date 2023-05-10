@@ -50,31 +50,52 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [loading, setLoading] = useState(true)
   const [loadingButton, setLoadingButton] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  useEffect(() => {
+    const ws = new WebSocket(
+      `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
+    )
+    ws.onopen = (event) => {
+      console.log(`Connected to App WS`)
+      setLoading(false)
+    }
+    ws.onmessage = function (event) {
+      if (
+        event?.data ===
+        `Processo ${tokenDecode.codigo_processo}: nova mensagem!`
+      ) {
+        UpdateMessageWS()
+        reproduzirSom()
+      }
+    }
+  }, [])
 
-  const { lastMessage, readyState } = useWebSocket(
-    `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
-    {
-      onOpen: () => {
-        console.log(`Connected to App WS`)
-        setLoading(false)
-      },
+  // const { lastMessage, lastJsonMessage } = useWebSocket(
+  //   `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
+  //   {
+  //     onOpen: (event) => {
+  //       console.log('lastJsonMessage', lastMessage)
+  //       console.log(`Connected to App WS`)
+  //       setLoading(false)
+  //     },
 
-      onMessage: (event) => {
-        if (lastMessage) {
-          UpdateMessageWS()
-          // reproduzirSom()
-        }
-      },
+  //     onMessage: (event) => {
+  //       console.log('lastMessage', lastMessage?.data)
+  //       if (lastMessage?.data === 'Processo 2059: nova mensagem!') {
+  //         UpdateMessageWS()
+  //         reproduzirSom()
+  //         console.log('recebeu', lastMessage.data)
+  //       }
+  //     },
 
-      onError: (event) => {
-        // console.error(event)
-      },
-      onClose: (e) => console.log(e),
+  //     onError: (event) => {
+  //       // console.error(event)
+  //     },
+  //     onClose: (e) => console.log(e),
 
-      shouldReconnect: (closeEvent) => true,
-      reconnectInterval: 1000,
-    },
-  )
+  //     shouldReconnect: (closeEvent) => true,
+  //     reconnectInterval: 1000,
+  //   },
+  // )
 
   useEffect(() => {
     if (messageListRef.current) {
@@ -199,9 +220,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }, [openSearch])
 
-  function reproduzirSom() {
+  async function reproduzirSom() {
     const som = new Audio(notificacaoSound)
-    som.play()
+    await som.play()
   }
 
   // envio de mensagem para api
