@@ -19,6 +19,7 @@ import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 import ReactLoading from 'react-loading'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { env } from 'process'
 
 const MySwal = withReactContent(Swal)
 interface MessageProps {
@@ -61,7 +62,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     ws.onmessage = function (event) {
       if (
         event?.data ===
-        `Processo ${tokenDecode.codigo_processo}: nova mensagem!`
+        `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
       ) {
         UpdateMessageWS()
         reproduzirSom()
@@ -222,7 +223,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
   async function reproduzirSom() {
     const som = new Audio(notificacaoSound)
-    await som.play()
+    som.play()
   }
 
   // envio de mensagem para api
