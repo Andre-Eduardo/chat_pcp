@@ -29,7 +29,7 @@ interface MessageProps {
   codigoProcesso_item?: string
   Criado: string
   codigo_processo?: string
-
+  Sender?: boolean
   TipoUsuario?: string
   role?: string
 }
@@ -144,48 +144,69 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   async function UpdateTypeMessage(msnList?: any) {
     if (msnList) {
       var listaMensagem = msnList
+
       await listaMensagem?.map((mensagem: any) => {
-        if (typeof tokenDecode.role === 'object') {
-          if (
-            mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
-            tokenDecode.role[0] === 'comprador'
-          ) {
-            mensagem.TipoUsuario = tokenDecode.nome_comprador
-            mensagem.role = 'comprador'
-          } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
-            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-            mensagem.role = 'fornecedor'
-          } else if (
-            mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
-            tokenDecode.role[0] === 'comprador'
-          ) {
-            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-            mensagem.role = 'fornecedor'
+        var role = mensagem?.PapelOrigem.split(',')[0]
+
+        if (mensagem.CodigoUsuario !== '') {
+          if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
+            mensagem.Sender = true
           } else {
+            mensagem.Sender = false
+          }
+          if (role === 'comprador') {
             mensagem.TipoUsuario = tokenDecode.nome_comprador
             mensagem.role = 'comprador'
+          } else {
+            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+            mensagem.role = 'fornecedor'
           }
         } else {
-          if (
-            mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
-            tokenDecode.role === 'comprador'
-          ) {
-            mensagem.TipoUsuario = tokenDecode.nome_comprador
-            mensagem.role = 'comprador'
-          } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
-            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-            mensagem.role = 'fornecedor'
-          } else if (
-            mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
-            tokenDecode.role === 'comprador'
-          ) {
-            mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-            mensagem.role = 'fornecedor'
-          } else {
-            mensagem.TipoUsuario = tokenDecode.nome_comprador
-            mensagem.role = 'comprador'
-          }
+          mensagem.TipoUsuario = 'Sistema'
+          mensagem.role = 'Sistema'
         }
+
+        // if (typeof tokenDecode.role === 'object') {
+        //   if (
+        //     mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
+        //     tokenDecode.role[0] === 'comprador'
+        //   ) {
+        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
+        //     mensagem.role = 'comprador'
+        //   } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
+        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+        //     mensagem.role = 'fornecedor'
+        //   } else if (
+        //     mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
+        //     tokenDecode.role[0] === 'comprador'
+        //   ) {
+        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+        //     mensagem.role = 'fornecedor'
+        //   } else {
+        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
+        //     mensagem.role = 'comprador'
+        //   }
+        // } else {
+        //   if (
+        //     mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
+        //     tokenDecode.role === 'comprador'
+        //   ) {
+        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
+        //     mensagem.role = 'comprador'
+        //   } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
+        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+        //     mensagem.role = 'fornecedor'
+        //   } else if (
+        //     mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
+        //     tokenDecode.role === 'comprador'
+        //   ) {
+        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
+        //     mensagem.role = 'fornecedor'
+        //   } else {
+        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
+        //     mensagem.role = 'comprador'
+        //   }
+        // }
       })
       setMessageList(listaMensagem)
     }
@@ -272,9 +293,12 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           {
             Mensagem: messageText,
             Criado: DateFormatted(),
-            CodigoUsuario: tokenDecode.codigo_usuario,
+            CodigoUsuario: tokenDecode.codigo_usuario
+              ? tokenDecode.codigo_usuario
+              : '',
             role: tokenDecode.role,
             TipoUsuario: AddTypeUser(),
+            Sender: true,
           },
         ])
       }
@@ -446,6 +470,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                         key={index}
                         position="left"
                         Mensagem={item.Mensagem}
+                        Sender={item?.Sender}
                         Criado={item.Criado}
                         role={item.role}
                         TipoUsuario={item.TipoUsuario}
