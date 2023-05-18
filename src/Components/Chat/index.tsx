@@ -65,7 +65,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       }
 
       ws.onmessage = function (event: any) {
-        console.log(event)
         if (
           event?.data ===
           `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
@@ -76,7 +75,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       }
 
       ws.onclose = (event: any) => {
-        console.log(`WebSocket connection closed. Reconnecting...`)
+        // console.log(`WebSocket connection closed. Reconnecting...`)
         connectWebSocket() // Reconnect
       }
     }
