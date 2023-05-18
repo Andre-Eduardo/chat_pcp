@@ -31,7 +31,7 @@ interface MessageProps {
   codigo_processo?: string
   Sender?: boolean
   TipoUsuario?: string
-  role?: string
+  PapelOrigem?: string
 }
 
 export default function Chat({ response, tokenJWT, tokenDecode }: any) {
@@ -52,20 +52,41 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [loadingButton, setLoadingButton] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   useEffect(() => {
-    const ws = new WebSocket(
-      `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
-    )
-    ws.onopen = (event) => {
-      console.log(`Connected to App WS`)
-      setLoading(false)
+    let ws: any = null
+
+    const connectWebSocket = () => {
+      ws = new WebSocket(
+        `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
+      )
+
+      ws.onopen = (event: any) => {
+        console.log(`Connected to App WS`)
+        setLoading(false)
+      }
+
+      ws.onmessage = function (event: any) {
+        console.log(event)
+        if (
+          event?.data ===
+          `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
+        ) {
+          UpdateMessageWS()
+          reproduzirSom()
+        }
+      }
+
+      ws.onclose = (event: any) => {
+        console.log(`WebSocket connection closed. Reconnecting...`)
+        connectWebSocket() // Reconnect
+      }
     }
-    ws.onmessage = function (event) {
-      if (
-        event?.data ===
-        `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
-      ) {
-        UpdateMessageWS()
-        reproduzirSom()
+
+    connectWebSocket()
+
+    // Cleanup function to close the WebSocket on component unmount
+    return () => {
+      if (ws) {
+        ws.close()
       }
     }
   }, [])
@@ -113,19 +134,19 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }, [])
   useEffect(() => {
-    if (tokenDecode.role) {
+    if (tokenDecode.papel) {
       const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
       const nomeFornecedor = tokenDecode.nome_fornecedor || 'Fornecedor'
-      if (typeof tokenDecode.role === 'string') {
-        if (tokenDecode.role === 'comprador') {
+      if (typeof tokenDecode.papel === 'string') {
+        if (tokenDecode.papel === 'comprador') {
           setNameChat(nomeComprador)
-        } else if (tokenDecode.role === 'fornecedor') {
+        } else if (tokenDecode.papel === 'fornecedor') {
           setNameChat(nomeFornecedor)
         }
       }
 
-      if (typeof tokenDecode.role === 'object') {
-        tokenDecode.role.find((e: any) => {
+      if (typeof tokenDecode.papel === 'object') {
+        tokenDecode.papel.find((e: any) => {
           if (e === 'comprador') {
             setNameChat(nomeComprador)
           } else if (e === 'fornecedor') {
@@ -146,7 +167,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       var listaMensagem = msnList
 
       await listaMensagem?.map((mensagem: any) => {
-        var role = mensagem?.PapelOrigem.split(',')[0]
+        var role = mensagem?.PapelOrigem?.split(',')[0]
 
         if (mensagem.CodigoUsuario !== '') {
           if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
@@ -269,14 +290,14 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
   function AddTypeUser() {
     var type
-    if (typeof tokenDecode.role === 'object') {
+    if (typeof tokenDecode.papel === 'object') {
       type =
-        tokenDecode.role[0] === 'comprador'
+        tokenDecode.papel[0] === 'comprador'
           ? tokenDecode.nome_comprador
           : tokenDecode.nome_fornecedor
     } else {
       type =
-        tokenDecode.role === 'comprador'
+        tokenDecode.papel === 'comprador'
           ? tokenDecode.nome_comprador
           : tokenDecode.nome_fornecedor
     }
@@ -296,7 +317,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
             CodigoUsuario: tokenDecode.codigo_usuario
               ? tokenDecode.codigo_usuario
               : '',
-            role: tokenDecode.role,
+            // PapelOrigem: tokenDecode.papel,
             TipoUsuario: AddTypeUser(),
             Sender: true,
           },
@@ -472,7 +493,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                         Mensagem={item.Mensagem}
                         Sender={item?.Sender}
                         Criado={item.Criado}
-                        role={item.role}
+                        role={item.PapelOrigem}
                         TipoUsuario={item.TipoUsuario}
                         token={tokenDecode}
                       />
