@@ -65,11 +65,13 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       }
 
       ws.onmessage = function (event: any) {
+        console.log(event.data)
         if (
           event?.data ===
           `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
         ) {
           UpdateMessageWS()
+          console.log('notifica')
           reproduzirSom()
         }
       }
