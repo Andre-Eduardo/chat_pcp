@@ -71,7 +71,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
         ) {
           UpdateMessageWS()
-          console.log('notifica')
+
           reproduzirSom()
         }
       }
@@ -135,19 +135,19 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }, [])
   useEffect(() => {
-    if (tokenDecode.papel) {
+    if (tokenDecode.role) {
       const nomeComprador = tokenDecode.nome_comprador || 'Comprador'
       const nomeFornecedor = tokenDecode.nome_fornecedor || 'Fornecedor'
-      if (typeof tokenDecode.papel === 'string') {
-        if (tokenDecode.papel === 'comprador') {
+      if (typeof tokenDecode.role === 'string') {
+        if (tokenDecode.role === 'comprador') {
           setNameChat(nomeComprador)
-        } else if (tokenDecode.papel === 'fornecedor') {
+        } else if (tokenDecode.role === 'fornecedor') {
           setNameChat(nomeFornecedor)
         }
       }
 
-      if (typeof tokenDecode.papel === 'object') {
-        tokenDecode.papel.find((e: any) => {
+      if (typeof tokenDecode.role === 'object') {
+        tokenDecode.role.find((e: any) => {
           if (e === 'comprador') {
             setNameChat(nomeComprador)
           } else if (e === 'fornecedor') {
@@ -291,14 +291,14 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
   function AddTypeUser() {
     var type
-    if (typeof tokenDecode.papel === 'object') {
+    if (typeof tokenDecode.role === 'object') {
       type =
-        tokenDecode.papel[0] === 'comprador'
+        tokenDecode.role[0] === 'comprador'
           ? tokenDecode.nome_comprador
           : tokenDecode.nome_fornecedor
     } else {
       type =
-        tokenDecode.papel === 'comprador'
+        tokenDecode.role === 'comprador'
           ? tokenDecode.nome_comprador
           : tokenDecode.nome_fornecedor
     }
