@@ -65,7 +65,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       }
 
       ws.onmessage = function (event: any) {
-        console.log(event.data)
         if (
           event?.data ===
           `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
@@ -302,6 +301,18 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           ? tokenDecode.nome_comprador
           : tokenDecode.nome_fornecedor
     }
+
+    return type
+  }
+
+  function AddRole() {
+    var type
+    if (typeof tokenDecode.role === 'object') {
+      type = tokenDecode.role.join(', ')
+    } else {
+      type = tokenDecode.role + ', '
+    }
+
     return type
   }
 
@@ -318,7 +329,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
             CodigoUsuario: tokenDecode.codigo_usuario
               ? tokenDecode.codigo_usuario
               : '',
-            // PapelOrigem: tokenDecode.papel,
+            PapelOrigem: AddRole(),
             TipoUsuario: AddTypeUser(),
             Sender: true,
           },

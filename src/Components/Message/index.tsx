@@ -29,7 +29,7 @@ export default function Message(data: propsMessageData) {
                 capitalize  mr-1
                 ${data.Sender ? 'text-[#121212] opacity-80' : 'text-[#fff] '}`}
               >
-                {`${data.TipoUsuario}` || 'fornecedor'}:
+                {`${data.TipoUsuario}`}:
               </p>
               <p
                 className={`font-normal text-left  ${
