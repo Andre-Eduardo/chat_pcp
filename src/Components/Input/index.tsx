@@ -1,7 +1,7 @@
 import React from 'react'
 import { IoPaperPlane } from 'react-icons/io5'
 
-export function Input({ click, text, handleText, ...rest }: any) {
+export function Input({ click, text, handleText, disabled, ...rest }: any) {
   function changeMessageText(event: any) {
     handleText(event.target.value)
   }
@@ -20,6 +20,7 @@ export function Input({ click, text, handleText, ...rest }: any) {
           className="w-full flex flex-row items-center  bg-white rounded-xl"
         >
           <input
+            disabled={disabled}
             value={text}
             onKeyDown={handleKeydown}
             onChange={changeMessageText}

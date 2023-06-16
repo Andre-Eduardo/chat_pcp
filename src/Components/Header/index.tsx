@@ -29,9 +29,6 @@ export function Header() {
           <img src={Logo} alt="Logo" width="140" />
         </div>
         <div className="relative flex flex-row justify-center items-center font-['Rawline']">
-          <h3 className="invisible absolute md:relative  md:visible font-normal text-lg colo-[#333333] pr-7 ">
-            Dubbox Tecnologia <i className="fas fa-chevron-down"></i>
-          </h3>
           <div className="relogio">
             <p className="horario flex flex-row justify-center items-center w-20 ">
               <FaClock className="mt-1 mr-2" size={16} />

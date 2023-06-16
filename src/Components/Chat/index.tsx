@@ -36,7 +36,7 @@ interface MessageProps {
 
 export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [textInputSearch, setTextInputSearch] = useState('')
-
+  const MySwal = withReactContent(Swal)
   const listaRef = useRef<any>(null)
   const [messageList, setMessageList] = useState<MessageProps[] | null>(null)
   const [messageText, setMessageText] = useState('')
@@ -51,6 +51,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [loading, setLoading] = useState(true)
   const [loadingButton, setLoadingButton] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [disabledInput, setDisabledInput] = useState(false)
   useEffect(() => {
     let ws: any = null
 
@@ -67,6 +68,20 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       ws.onmessage = function (event: any) {
         if (
           event?.data ===
+          `Esta conversa foi encerrada - Código do Processo ${tokenDecode.codigo_processo}.`
+        ) {
+          MySwal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${event?.data}`,
+            backdrop: false,
+            showCancelButton: false,
+            showConfirmButton: false,
+          })
+          setDisabledInput(true)
+        }
+        if (
+          event?.data ===
           `Processo ${tokenDecode.codigo_processo}: nova mensagem!.`
         ) {
           UpdateMessageWS()
@@ -76,7 +91,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       }
 
       ws.onclose = (event: any) => {
-        // console.log(`WebSocket connection closed. Reconnecting...`)
         connectWebSocket() // Reconnect
       }
     }
@@ -90,34 +104,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       }
     }
   }, [])
-
-  // const { lastMessage, lastJsonMessage } = useWebSocket(
-  //   `${process.env.REACT_APP_WEBSOCKET_BASEURL}?CodigoUsuario=${tokenDecode.codigo_usuario}&CodigosProcessos=${tokenDecode.codigo_processo}`,
-  //   {
-  //     onOpen: (event) => {
-  //       console.log('lastJsonMessage', lastMessage)
-  //       console.log(`Connected to App WS`)
-  //       setLoading(false)
-  //     },
-
-  //     onMessage: (event) => {
-  //       console.log('lastMessage', lastMessage?.data)
-  //       if (lastMessage?.data === 'Processo 2059: nova mensagem!') {
-  //         UpdateMessageWS()
-  //         reproduzirSom()
-  //         console.log('recebeu', lastMessage.data)
-  //       }
-  //     },
-
-  //     onError: (event) => {
-  //       // console.error(event)
-  //     },
-  //     onClose: (e) => console.log(e),
-
-  //     shouldReconnect: (closeEvent) => true,
-  //     reconnectInterval: 1000,
-  //   },
-  // )
 
   useEffect(() => {
     if (messageListRef.current) {
@@ -515,6 +501,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
               <footer className="fixed   md:px-8 w-full  bottom-0 bg-[#E4E4E4] ">
                 <div className="md:mb-3">
                   <Input
+                    disabled={disabledInput}
                     text={messageText}
                     handleText={setMessageText}
                     click={SubmitMessage}
