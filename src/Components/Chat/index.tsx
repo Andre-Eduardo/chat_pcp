@@ -52,6 +52,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
   const [loadingButton, setLoadingButton] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [disabledInput, setDisabledInput] = useState(false)
+  const [erroPage, setErroPage] = useState(false)
   useEffect(() => {
     let ws: any = null
 
@@ -80,7 +81,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           })
           setDisabledInput(true)
           setMessageList([])
-          setLoadingButton(true)
+          setErroPage(true)
         }
         if (
           event?.data ===
@@ -400,7 +401,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
     }
   }
 
-  return (
+  return erroPage ? (
     <>
       {loading ? (
         <ReactLoading
@@ -515,5 +516,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         </div>
       )}
     </>
+  ) : (
+    <></>
   )
 }

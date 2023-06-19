@@ -12,7 +12,7 @@ function App() {
   const [data, setData] = useState({})
   const [Token, setToken] = useState('')
   const [TokenDecode, setTokenDecode] = useState('')
-
+  const [erroPage, setErroPage] = useState(false)
   function decodeJWT(token: string) {
     try {
       const decoded = jose.decodeJwt(token)
@@ -33,6 +33,7 @@ function App() {
         })
         .then((response) => setData(response.data))
     } catch (error: any) {
+      setErroPage(true)
       MySwal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -54,6 +55,7 @@ function App() {
 
       GetMessage(tokenUrl).then(() => setLoading(false))
     } else {
+      setErroPage(true)
       MySwal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -66,7 +68,7 @@ function App() {
     }
   }, [])
 
-  return (
+  return erroPage ? (
     <>
       {loading && data ? (
         <>
@@ -82,6 +84,8 @@ function App() {
         <Chat response={data} tokenJWT={Token} tokenDecode={TokenDecode} />
       )}
     </>
+  ) : (
+    <></>
   )
 }
 
