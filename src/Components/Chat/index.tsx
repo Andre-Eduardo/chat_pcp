@@ -79,6 +79,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
             showConfirmButton: false,
           })
           setDisabledInput(true)
+          setMessageList([])
+          setLoadingButton(true)
         }
         if (
           event?.data ===
