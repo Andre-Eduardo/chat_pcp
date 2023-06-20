@@ -275,11 +275,30 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           Authorization: `Bearer ${tokenJWT}`,
         },
       })
-    } catch (error) {
+      if (messageList !== null) {
+        setMessageList([
+          ...messageList,
+          {
+            Mensagem: messageText,
+            Criado: DateFormatted(),
+            CodigoUsuario: tokenDecode.codigo_usuario
+              ? tokenDecode.codigo_usuario
+              : '',
+            PapelOrigem: AddRole(),
+            TipoUsuario: AddTypeUser(),
+            Sender: true,
+          },
+        ])
+      }
+    } catch (error: any) {
+      console.log(error.response.data.ErrorMessages)
       MySwal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `${error}`,
+        text: `${error.response.data.ErrorMessages[3].split('└')[1]}`,
+        backdrop: false,
+        showCancelButton: false,
+        showConfirmButton: false,
       })
     }
   }
@@ -317,22 +336,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
 
     if (messageText) {
       if (messageList !== null) {
-        setMessageList([
-          ...messageList,
-          {
-            Mensagem: messageText,
-            Criado: DateFormatted(),
-            CodigoUsuario: tokenDecode.codigo_usuario
-              ? tokenDecode.codigo_usuario
-              : '',
-            PapelOrigem: AddRole(),
-            TipoUsuario: AddTypeUser(),
-            Sender: true,
-          },
-        ])
+        PostMessage(messageText)
       }
       setMessageText('')
-      PostMessage(messageText)
 
       const messageListDiv = messageListRef.current
       const scrollHeight = messageListDiv.scrollHeight
