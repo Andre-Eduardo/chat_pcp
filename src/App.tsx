@@ -34,6 +34,7 @@ function App() {
         .then((response) => setData(response.data))
     } catch (error: any) {
       setErroPage(true)
+
       MySwal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -68,7 +69,7 @@ function App() {
     }
   }, [])
 
-  return erroPage ? (
+  return !erroPage ? (
     <>
       {loading && data ? (
         <>

@@ -21,7 +21,6 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { env } from 'process'
 
-const MySwal = withReactContent(Swal)
 interface MessageProps {
   CodigoConversa?: string
   CodigoUsuario?: string
@@ -90,6 +89,14 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           UpdateMessageWS()
 
           reproduzirSom()
+        }
+        if (tokenDecode.codigo_participante) {
+          if (
+            event?.data ===
+            `Nova mensagem\nprocesso:${tokenDecode.codigo_processo}\nusuario:${tokenDecode.codigo_participante}\n`
+          ) {
+            UpdateMessageWS()
+          }
         }
       }
 
@@ -390,18 +397,19 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           setLoadingButton(false)
         })
     } catch (error) {
-      MySwal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: `${error}`,
-        backdrop: false,
-        showCancelButton: false,
-        showConfirmButton: false,
-      })
+      console.log(error, 'error')
+      // MySwal.fire({
+      //   icon: 'error',
+      //   title: 'Oops...',
+      //   text: `${error}`,
+      //   backdrop: false,
+      //   showCancelButton: false,
+      //   showConfirmButton: false,
+      // })
     }
   }
 
-  return erroPage ? (
+  return !erroPage ? (
     <>
       {loading ? (
         <ReactLoading
