@@ -291,7 +291,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         ])
       }
     } catch (error: any) {
-      console.log(error.response.data.ErrorMessages)
       MySwal.fire({
         icon: 'error',
         title: 'Oops...',
