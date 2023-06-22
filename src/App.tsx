@@ -38,7 +38,7 @@ function App() {
       MySwal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `${error}`,
+        text: `Desculpe, ocorreu um erro na solicitação. Parece que houve um problema de autenticação (Código de status ${error.response.status}). Por favor, verifique suas credenciais e tente novamente. Se precisar de ajuda, contate nosso suporte!`,
         backdrop: false,
         showCancelButton: false,
         showConfirmButton: false,

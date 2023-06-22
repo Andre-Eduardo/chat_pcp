@@ -294,7 +294,7 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       MySwal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `${error.response.data.ErrorMessages[3].split('└')[1]}`,
+        text: `${error.response.data.ErrorMessages[3]}`,
         backdrop: false,
         showCancelButton: false,
         showConfirmButton: false,
