@@ -441,7 +441,8 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
                       </h3>
                       <h4 className="text-[#A8A8A8] text-xs">
                         Processo: {tokenDecode.codigo_processo} | Item:{' '}
-                        {tokenDecode.codigo_item_processo}
+                        {tokenDecode.codigo_item_processo &&
+                          tokenDecode.codigo_item_processo}
                       </h4>
                     </div>
                   </div>
