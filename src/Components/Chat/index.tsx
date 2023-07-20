@@ -182,48 +182,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           mensagem.TipoUsuario = 'Sistema'
           mensagem.role = 'Sistema'
         }
-
-        // if (typeof tokenDecode.role === 'object') {
-        //   if (
-        //     mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
-        //     tokenDecode.role[0] === 'comprador'
-        //   ) {
-        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
-        //     mensagem.role = 'comprador'
-        //   } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
-        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-        //     mensagem.role = 'fornecedor'
-        //   } else if (
-        //     mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
-        //     tokenDecode.role[0] === 'comprador'
-        //   ) {
-        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-        //     mensagem.role = 'fornecedor'
-        //   } else {
-        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
-        //     mensagem.role = 'comprador'
-        //   }
-        // } else {
-        //   if (
-        //     mensagem.CodigoUsuario === tokenDecode.codigo_usuario &&
-        //     tokenDecode.role === 'comprador'
-        //   ) {
-        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
-        //     mensagem.role = 'comprador'
-        //   } else if (mensagem.CodigoUsuario === tokenDecode.codigo_usuario) {
-        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-        //     mensagem.role = 'fornecedor'
-        //   } else if (
-        //     mensagem.CodigoUsuario !== tokenDecode.codigo_usuario &&
-        //     tokenDecode.role === 'comprador'
-        //   ) {
-        //     mensagem.TipoUsuario = tokenDecode.nome_fornecedor
-        //     mensagem.role = 'fornecedor'
-        //   } else {
-        //     mensagem.TipoUsuario = tokenDecode.nome_comprador
-        //     mensagem.role = 'comprador'
-        //   }
-        // }
       })
       setMessageList(listaMensagem)
     }
@@ -299,6 +257,9 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
         showCancelButton: false,
         showConfirmButton: false,
       })
+      setDisabledInput(true)
+      setMessageList([])
+      setErroPage(true)
     }
   }
 
@@ -380,7 +341,6 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
       },
     )
 
-    // setMessageList(rest.data.Pagina.Mensagens.reverse())
     UpdateTypeMessage(rest.data.Pagina.Mensagens.reverse())
   }
 
@@ -397,20 +357,11 @@ export default function Chat({ response, tokenJWT, tokenDecode }: any) {
           },
         })
         .then((rest) => {
-          // setMessageList(rest.data.Pagina.Mensagens)
           UpdateTypeMessage(rest.data.Pagina.Mensagens.reverse())
           setLoadingButton(false)
         })
     } catch (error) {
       console.log(error, 'error')
-      // MySwal.fire({
-      //   icon: 'error',
-      //   title: 'Oops...',
-      //   text: `${error}`,
-      //   backdrop: false,
-      //   showCancelButton: false,
-      //   showConfirmButton: false,
-      // })
     }
   }
 

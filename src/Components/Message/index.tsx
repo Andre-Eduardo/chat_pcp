@@ -1,7 +1,7 @@
 import React from 'react'
 import { DateFormatted } from '../../Functions/DateFormatted'
 import { DateApi } from '../../Functions/DateApi'
-
+import './styles.scss'
 interface propsMessageData {
   Mensagem: string
   Criado: string
@@ -22,7 +22,7 @@ export default function Message(data: propsMessageData) {
             data.Sender ? 'bg-[#FFFFFF]' : 'bg-[#4784DE]'
           }`}
         >
-          <div className=" mr-5 ">
+          <div className=" mr-5 max-w-[100%]">
             <div className="flex flex-col">
               <p
                 className={`
@@ -32,7 +32,7 @@ export default function Message(data: propsMessageData) {
                 {`${data.TipoUsuario}`}:
               </p>
               <p
-                className={`font-normal text-left  ${
+                className={`font-normal text-left  break-long-words  ${
                   data.Sender
                     ? 'text-[#121212] opacity-50'
                     : 'text-[#fff] opacity-70'
