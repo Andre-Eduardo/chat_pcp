@@ -1,5 +1,10 @@
 .break-long-words {
+  max-width: 90vw;
   overflow-wrap: break-word;
-
+  text-align: justify;
+}
+.over {
+  line-height: 1.5;
   max-width: 100%;
+  white-space: break-spaces;
 }
